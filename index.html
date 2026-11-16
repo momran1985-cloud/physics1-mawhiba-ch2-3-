@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>منصة الاستقصاء 5E – النشاط الرابع: رسم مسار الرحلة</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#12356b;--teal:#0e9aa7;--orange:#f08a24;--bg:#f3f6fb;--card:#fff;--ink:#1d2b3a;--mut:#64738a;--ok:#1e9e5a;--bad:#d64545;--warn:#c98a00;--line:#dbe3ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Tajawal',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.85;font-size:16px}
+header{background:linear-gradient(135deg,var(--navy),#1d5aa8);color:#fff;padding:14px 18px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+header h1{margin:0;font-size:20px;font-weight:800}
+header small{opacity:.85;display:block;font-weight:500}
+.chip{background:rgba(255,255,255,.15);border-radius:30px;padding:4px 14px;font-size:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.chip select{font-family:inherit;border-radius:8px;border:0;padding:2px 6px}
+#steps{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);display:flex;overflow-x:auto;gap:4px;padding:8px 10px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.step{flex:1 0 auto;border:2px solid var(--line);background:#fff;border-radius:12px;padding:6px 12px;font-family:inherit;font-size:14px;cursor:pointer;white-space:nowrap;color:var(--ink)}
+.step.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.step.done:not(.on){border-color:var(--ok);color:var(--ok)}
+.pbar{height:5px;background:#e7edf5}.pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--orange));width:0;transition:.4s}
+main{max-width:1050px;margin:0 auto;padding:16px}
+.card{background:var(--card);border-radius:16px;padding:18px 20px;margin:14px 0;box-shadow:0 2px 10px rgba(18,53,107,.07);border:1px solid var(--line)}
+.card h3{margin:0 0 10px;color:var(--navy);font-size:18px}
+.hero{background:linear-gradient(135deg,#e9f6f8,#fff4e6);border-radius:16px;padding:18px 22px;border:1px solid #cfe7ea}
+.hero h2{margin:0 0 6px;color:var(--navy)}
+.hero p{margin:0;color:#41546b}
+.btn{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:8px 16px;font-family:inherit;font-size:15px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn:hover{filter:brightness(1.12)}.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--navy);border:1.5px solid var(--navy)}
+.btn.sec{background:var(--orange)}
+.btn.ok{background:var(--ok)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+.nav{justify-content:space-between;margin:18px 0}
+.in,textarea,select.in{font-family:inherit;font-size:15px;border:1.5px solid var(--line);border-radius:10px;padding:6px 10px;background:#fff;color:var(--ink)}
+input.in[type=number]{width:130px}
+textarea{width:100%;min-height:80px;resize:vertical}
+.tag{background:var(--teal);color:#fff;border-radius:20px;padding:1px 10px;font-size:12px;margin-inline-end:6px}
+.badge{display:inline-block;border-radius:20px;padding:2px 12px;font-size:13px;color:#fff;background:var(--orange)}
+.mut{color:var(--mut)}
+.hint{display:none;background:#fff8e1;border-right:4px solid var(--orange);padding:6px 12px;border-radius:8px;margin:6px 0;font-size:14px}
+.hint.on{display:block}
+.fb{margin-top:6px;font-size:14px;border-radius:8px;padding:0 10px}
+.fb.ok,.qfb.ok{background:#e7f6ee;color:#116b3b;padding:6px 10px;border-radius:8px}
+.fb.bad,.qfb.bad{background:#fdecec;color:#a02727;padding:6px 10px;border-radius:8px}
+.fb.warn{background:#fff6dd;color:#7a5600;padding:6px 10px;border-radius:8px}
+.qfb{margin-top:6px;font-size:14px}
+.task,.q{border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;margin:10px 0;background:#fcfdff}
+.task.okc{border-color:var(--ok);background:#f4fbf7}
+.opt{display:block;padding:3px 0;cursor:pointer}
+.tabs{display:flex;gap:6px;margin-bottom:8px}
+.tab{border:0;background:#eaf0f8;border-radius:10px 10px 0 0;padding:6px 14px;font-family:inherit;cursor:pointer}
+.tab.on{background:var(--navy);color:#fff}
+.vwrap{position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000}
+.vwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.phet .vwrap{padding-top:62%}
+.sim canvas,canvas.fluid{width:100%;height:auto;border-radius:12px;border:1.5px solid var(--line);background:#bfe3f2;touch-action:none;display:block}
+.sim-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+@media(max-width:760px){.sim-grid{grid-template-columns:1fr}}
+.sim-ctl label{display:block;margin:6px 0;font-size:14px}
+.sim-ctl input[type=range]{width:100%}
+.sim-out{background:#f1f6fc;border-radius:12px;padding:8px 14px;font-size:14px;line-height:1.9}
+.sim-out b{color:var(--navy)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:center}
+th{background:#eaf1fa}
+td.l{text-align:right}
+details{border:1.5px solid var(--line);border-radius:12px;padding:8px 14px;margin:8px 0;background:#fcfdff}
+summary{cursor:pointer;font-weight:700;color:var(--navy)}
+.eq{background:#eef5ff;border-radius:10px;padding:6px 14px;text-align:center;font-size:17px;margin:8px 0;direction:ltr;font-family:'Tajawal',serif}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+.bar{height:22px;border-radius:6px;background:var(--teal);color:#fff;font-size:13px;padding:0 8px;white-space:nowrap;min-width:30px}
+.overlay{position:fixed;inset:0;background:rgba(10,25,50,.7);z-index:100;display:flex;align-items:center;justify-content:center;padding:14px;overflow:auto}
+.overlay.hidden{display:none}
+.box{background:#fff;border-radius:18px;padding:24px;max-width:560px;width:100%}
+.box.wide{max-width:980px;max-height:92vh;overflow:auto}
+.box h2{margin-top:0;color:var(--navy)}
+.box select,.box input[type=text]{width:100%;margin:6px 0;font-family:inherit;font-size:16px;padding:8px;border:1.5px solid var(--line);border-radius:10px}
+.gcard{border:1.5px solid var(--teal);border-radius:12px;padding:8px 12px;background:#f2fbfc}
+.gcard b{color:var(--navy)}
+footer{text-align:center;color:var(--mut);font-size:13px;padding:20px}
+@media print{header,#steps,.pbar,.nav,.btn{display:none!important}.card{box-shadow:none}}
+</style>
+</head>
+<body>
+
+<div id="login" class="overlay">
+ <div class="box">
+  <h2>🛫 منصة رسم مسار الرحلة</h2>
+  <p class="mut">الوحدة الثانية – النشاط الرابع | الصف الأول الثانوي (موهبة) | مدارس الأنجال الأهلية</p>
+  <label>اختر اسمك من قائمة الفصل:</label>
+  <select id="lsel"></select>
+  <input type="text" id="lname" placeholder="أو اكتب اسمك (زائر)">
+  <div class="row"><button class="btn" id="lgo">ابدأ التعلم ←</button><button class="btn sec" id="lgroup">👥 الدخول كمجموعة</button><button class="btn ghost" id="lteacher">دخول المعلم</button></div>
+</div></div>
+
+<header>
+ <div><h1>✈️ رسم مسار الرحلة – منصة استقصاء بنموذج 5E<small>الوحدة الثانية • النشاط الرابع • الصف الأول الثانوي (موهبة) • مدارس الأنجال الأهلية</small></h1></div>
+ <div class="chip" id="chip"></div>
+</header>
+<nav id="steps"></nav>
+<div class="pbar"><i id="pb"></i></div>
+<main id="stage"></main>
+<div id="tmodal" class="overlay hidden"></div>
+<div id="gmodal" class="overlay hidden"></div>
+<footer>إعداد: أ. محمد عمران – مدارس الأنجال الأهلية بالأحساء</footer>
+
+<script>
+'use strict';
+/* ================= إعدادات عامة ================= */
+const PIN='1234'; // رمز دخول المعلم (يمكن تغييره)
+const TEACHER_EMAIL='momran1985@gmail.com';
+const getEmail=()=>store.get('ps5_email','')||TEACHER_EMAIL;
+const NAMES=['عبداللطيف جابر بن حسن الصويل','أحمد فاضل بن عبدالوهاب العلوي','مهدي صالح بن علي العيسى','غسان بن سعيد بن منصور القضيب','حسين علي بن محمد الضاحي','علي عبداللطيف بن ناجي البحراني','أنور عبدالواحد بن ابراهيم العلي','علي سعيد بن علي البدر','محمد خالد بن محمد الشريط','حسن محمد دخيل العوض','حسين عماد علي الماجد','عبدالرؤوف خليفه بن محمد الغتم','عبدالعزيز صالح بن محمد المسلم','علي محمد بن عيسى الجعيدان','عيسى عبدالله بن عيسى البطيح','محمد احمد بن محمد السليم','محمد عبدالعزيز بن علي البدر','أحمد أسامة جواد المطر','إلياس فواز القو','يحيى زكريا أحد المرزوق','أحمد تركي أحمد العبداللطيف','خالد سفيان عبدالله الكثير'];
+const LV={1:'داعم',2:'متوسط',3:'متقدم'};
+const LVD={1:'استقصاء موجَّه بخطوات وتلميحات ظاهرة',2:'استقصاء موجَّه بتلميحات عند الطلب',3:'استقصاء حر: أنت تصمّم التجربة'};
+const STY={visual:'🎨 بصري',exp:'🔬 تجريبي',verbal:'🗣️ لفظي',math:'🔢 منطقي-رياضي'};
+const ROLES=['القائد','المسجّل','مشغّل المحاكاة','المتحدّث'];
+const AIR=800,D2R=Math.PI/180;
+const PT={RY:{x:0,y:0,n:'الرياض'},AD:{x:780,y:-29,n:'أبوظبي'},DO:{x:485,y:64,n:'الدوحة'}};
+const hAD=Math.atan2(PT.AD.y,PT.AD.x)/D2R;
+const LAND=[[-100,-300],[900,-300],[900,80],[868,52],[800,5],[775,-12],[700,-22],[600,-22],[520,-22],[492,-25],[492,40],[487,64],[470,120],[453,162],[440,130],[425,60],[412,-5],[395,60],[370,140],[340,189],[302,243],[300,300],[-100,300]];
+const DIRS=['الشرق','الشمال الشرقي','الشمال','الشمال الغربي','الغرب','الجنوب الغربي','الجنوب','الجنوب الشرقي'];
+const dirWord=a=>DIRS[Math.round((((a%360)+360)%360)/45)%8];
+const pad=n=>String(n).padStart(2,'0');
+const clock=m=>{const t=8*60+Math.round(m);return pad(Math.floor(t/60)%24)+':'+pad(t%60)};
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const copyText=t=>{try{navigator.clipboard.writeText(t);}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove();}alert('تم النسخ ✔');};
+
+/* ================= الحالة ================= */
+let roster=store.get('ps5_roster',{});
+NAMES.forEach(n=>{if(!roster[n])roster[n]={level:0,style:'',group:'',role:''}});
+let student='',S=null,teacherOK=false;
+const defS=()=>({phase:0,done:{},level:0,kwl:{k:'',w:'',l:''},objSel:[],pre:{},ans:{},ok:{},trials:[],insq:{},types:{},c:{},quiz:{},conf:{},strat:{},reflect:{},final:null});
+const save=()=>{if(student)store.set('ps5_s_'+student,S)};
+const L=()=>S.level||2;
+const getp=(o,p)=>p.split('.').reduce((a,k)=>a&&a[k],o);
+const setp=(o,p,v)=>{const ks=p.split('.');let a=o;ks.slice(0,-1).forEach(k=>{a=a[k]=a[k]||{}});a[ks.pop()]=v};
+function bind(root){$$('[data-bind]',root).forEach(el=>{const p=el.dataset.bind,v=getp(S,p);if(el.type==='checkbox')el.checked=!!v;else if(v!=null&&v!=='')el.value=v;const f=()=>{setp(S,p,el.type==='checkbox'?el.checked:el.value);save()};el.addEventListener('input',f);el.addEventListener('change',f)})}
+
+/* ================= عناصر مساعدة ================= */
+const hero=(t,p)=>`<div class="hero"><h2>${t}</h2><p>${p}</p></div>`;
+const card=(t,b,c)=>`<section class="card ${c||''}">${t?`<h3>${t}</h3>`:''}${b}</section>`;
+const ta=(p,ph,rows)=>`<textarea data-bind="${p}" placeholder="${ph||''}" ${rows?`style="min-height:${rows*28}px"`:''}></textarea>`;
+
+/* ---- وسائط: فيديو مدمج + محاكاة داخل المنصة ---- */
+const VID={
+ kwl:{id:'DHVLO8oqZtE',t:'المسافة، الإزاحة، والسرعة'},
+ hook:{id:'vLksrlyK0j4',t:'الفرق بين المسافة والإزاحة'},
+ exp:{id:'f5vWlnpw9nc',t:'اتجاه وسرعة طائرة في الرياح باستخدام المتجهات (بالإنجليزية)'},
+ exl:{id:'BGQ8T-W4M4U',t:'شرح المسافة والإزاحة والسرعة القياسية والاتجاهية'},
+ enr:{id:'s0vBAvaEBcs',t:'استخدام المتجهات لنمذجة أثر الرياح على الطائرة (بالإنجليزية)'},
+ ev:{id:'633MKb-NAtg',t:'مسألة متجهات: الطائرة والرياح (بالإنجليزية)'},
+ meta:{id:'GD-LXX_iC8w',t:'مراجعة: الإزاحة والسرعة'}};
+function media(key,q,sim,phet){return `<section class="card media" data-key="${key}" data-q="${q}" data-sim="${sim||''}" data-phet="${phet||''}"><div class="tabs"><button class="tab on" data-t="v">🎞️ فيديو توضيحي</button><button class="tab" data-t="s">🧪 محاكاة داخل المنصة</button>${phet?'<button class="tab" data-t="p">🌐 PhET (اختياري)</button>':''}</div><div class="mbody"></div></section>`}
+function embedURL(u){let m;u=u.trim();if((m=u.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/)))return{yt:'https://www.youtube.com/embed/'+m[1],page:'https://www.youtube.com/watch?v='+m[1]};if(/\.(mp4|webm)(\?.*)?$/i.test(u))return{file:u};return{link:u}}
+function simInto(el,type){el.innerHTML='';if(type==='walk')initWalk(el);else if(type==='dd')initDD(el);else if(type==='vec')initVec(el);else createSim(el,{showW:true,showDir:true,showStop:false,maxW:300})}
+function initWalk(host){
+ host.innerHTML=`<canvas class="fluid" width="700" height="230"></canvas><div class="sim-out wk" style="margin-top:8px"></div><div class="row"><button class="btn ghost wr">↺ إعادة</button></div><p class="mut" style="font-size:13px">اسحب الرجل يميناً ويساراً على خط الأعداد (الاتجاه نحو اليمين موجب)، ثم قارن المسافة المقطوعة بالإزاحة.</p>`;
+ const cv=$('canvas',host),cx=cv.getContext('2d'),out=$('.wk',host);let x=0,dist=0,drag=false;const X=m=>350+m*30,M=px=>(px-350)/30;
+ const draw=()=>{cx.clearRect(0,0,700,230);cx.fillStyle='#f1f8ff';cx.fillRect(0,0,700,230);cx.strokeStyle='#12356b';cx.lineWidth=3;cx.beginPath();cx.moveTo(X(-11),170);cx.lineTo(X(11),170);cx.stroke();cx.font='13px Tajawal,sans-serif';cx.textAlign='center';cx.fillStyle='#333';cx.lineWidth=1.5;
+  for(let i=-11;i<=11;i++){cx.beginPath();cx.moveTo(X(i),164);cx.lineTo(X(i),176);cx.stroke();if(i%2===0)cx.fillText(i,X(i),195)}
+  cx.fillStyle='#1e9e5a';cx.beginPath();cx.arc(X(0),170,6,0,7);cx.fill();cx.fillText('البداية',X(0),215);
+  if(Math.abs(x)>.01){cx.strokeStyle='#d64545';cx.lineWidth=4;cx.beginPath();cx.moveTo(X(0),158);cx.lineTo(X(x),158);cx.stroke()}
+  const mx=X(x);cx.strokeStyle='#f08a24';cx.fillStyle='#f08a24';cx.lineWidth=4;cx.beginPath();cx.arc(mx,92,13,0,7);cx.fill();cx.beginPath();cx.moveTo(mx,105);cx.lineTo(mx,140);cx.moveTo(mx,115);cx.lineTo(mx-16,132);cx.moveTo(mx,115);cx.lineTo(mx+16,132);cx.moveTo(mx,140);cx.lineTo(mx-12,168);cx.moveTo(mx,140);cx.lineTo(mx+12,168);cx.stroke();
+  const d=Math.round(x*10)/10;out.innerHTML=`📍 الموضع: <b>${d} m</b><br>🛣️ المسافة المقطوعة (مجموع ما سار): <b>${dist.toFixed(1)} m</b><br>➡️ الإزاحة (الموضع النهائي − الابتدائي): <b>${d} m</b> ${d>0?'نحو اليمين (+)':d<0?'نحو اليسار (−)':'(صفر: عاد إلى البداية)'}<br>📌 جرّب: امشِ 5 m يميناً ثم 5 m يساراً، ولاحظ أن الإزاحة تصبح صفراً والمسافة 10 m.`};
+ const pos=e=>{const r=cv.getBoundingClientRect();return(e.clientX-r.left)*700/r.width};
+ cv.addEventListener('pointerdown',e=>{if(Math.abs(pos(e)-X(x))<45){drag=true;cv.setPointerCapture(e.pointerId)}});
+ cv.addEventListener('pointermove',e=>{if(!drag)return;const nx=Math.max(-11,Math.min(11,Math.round(M(pos(e))*10)/10));dist+=Math.abs(nx-x);x=nx;draw()});
+ cv.addEventListener('pointerup',()=>drag=false);$('.wr',host).onclick=()=>{x=0;dist=0;draw()};draw()}
+function initMedia(root){$$('.media',root).forEach(box=>{
+ const key=box.dataset.key,q=box.dataset.q,ph=box.dataset.phet,simT=box.dataset.sim,body=$('.mbody',box);
+ function showV(){const cust=store.get('ps5_vid',{})[key],e=cust?embedURL(cust):{yt:'https://www.youtube.com/embed/'+VID[key].id,page:'https://www.youtube.com/watch?v='+VID[key].id};
+  let h='';
+  if(e.yt)h=`<div class="vwrap"><iframe src="${e.yt}" title="فيديو توضيحي" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>`;
+  else if(e.file)h=`<video controls src="${e.file}" style="width:100%;border-radius:12px"></video>`;
+  else h=`<p><a target="_blank" rel="noopener" href="${e.link}">فتح الفيديو في نافذة جديدة</a></p>`;
+  h+=`<p style="margin:8px 0 2px"><b>🎬 ${cust?'فيديو مخصّص من المعلم':VID[key].t}</b></p><div class="row">${e.page?`<a class="btn ghost" target="_blank" rel="noopener" href="${e.page}">↗ فتح في يوتيوب (إن لم يظهر هنا)</a>`:''}<a class="btn ghost" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=${encodeURIComponent(q)}">🔎 فيديوهات أخرى</a></div>
+  <details><summary>استبدال الفيديو برابط آخر</summary><div class="row"><input type="text" class="in vurl" placeholder="رابط يوتيوب أو mp4" style="flex:1;min-width:200px"><button class="btn sec" data-add>دمج</button>${cust?'<button class="btn ghost" data-rm>استعادة الافتراضي</button>':''}</div></details>`;
+  body.innerHTML=h;const add=$('[data-add]',body),rm=$('[data-rm]',body);
+  if(add)add.onclick=()=>{const v=$('.vurl',body).value.trim();if(!v)return;const o=store.get('ps5_vid',{});o[key]=v;store.set('ps5_vid',o);showV()};
+  if(rm)rm.onclick=()=>{const o=store.get('ps5_vid',{});delete o[key];store.set('ps5_vid',o);showV()}}
+ function showS(){body.innerHTML='<div class="msim"></div>';simInto($('.msim',body),simT)}
+ function showP(){const u=`https://phet.colorado.edu/sims/html/${ph}/latest/${ph}_all.html?locale=ar`;body.innerHTML=`<div class="phet"><div class="vwrap"><iframe src="${u}" allowfullscreen loading="lazy"></iframe></div></div><div class="row"><a class="btn ghost" target="_blank" rel="noopener" href="${u}">فتح المحاكاة في نافذة مستقلة ↗</a><span class="mut">(محاكاة PhET خارجية تحتاج إنترنت؛ إن لم تظهر فاستخدم المحاكاة الداخلية)</span></div>`}
+ $$('.tab',box).forEach(b=>b.onclick=()=>{$$('.tab',box).forEach(x=>x.classList.remove('on'));b.classList.add('on');b.dataset.t==='v'?showV():b.dataset.t==='s'?showS():showP()});
+ showV()})}
+
+/* ---- اختبارات (محرك عام) ---- */
+function quizHTML(key,items){return items.map((it,i)=>{const v=(S.quiz[key]||{})[i];
+ const body=it.type==='num'?`<input type="number" step="any" class="in" data-qk="${key}" data-qi="${i}" value="${v??''}"> ${it.unit||''}`:it.opts.map((o,j)=>`<label class="opt"><input type="radio" name="${key}${i}" data-qk="${key}" data-qi="${i}" value="${j}" ${String(v)===String(j)?'checked':''}> ${o}</label>`).join('');
+ return `<div class="q" id="${key}_q${i}"><div>${it.b?`<span class="tag">${it.b}</span>`:''}<b>${i+1}.</b> ${it.q}</div>${body}<div class="qfb"></div></div>`}).join('')}
+function bindQuiz(root){$$('[data-qk]',root).forEach(el=>{const f=()=>{const k=el.dataset.qk,i=el.dataset.qi;(S.quiz[k]=S.quiz[k]||{})[i]=el.value;save()};el.addEventListener('input',f);el.addEventListener('change',f)})}
+function gradeQuiz(key,items){let sc=0;const res=items.map((it,i)=>{const v=(S.quiz[key]||{})[i];let ok=false;if(v!==undefined&&v!==''){ok=it.type==='num'?(+v>=it.min&&+v<=it.max):(+v===it.a)}
+ const fb=$(`#${key}_q${i} .qfb`);if(fb){fb.className='qfb '+(ok?'ok':'bad');fb.innerHTML=(ok?'✅ صحيحة. ':'❌ غير صحيحة. ')+(it.why||'')}if(ok)sc++;return ok});return{sc,res}}
+
+/* ================= المحاكاة الرئيسية للرحلة ================= */
+let SIMS=[];
+const w2p=(x,y)=>[(x+100)*.9,(300-y)*.9],p2w=(a,b)=>[a/.9-100,300-b/.9];
+function arrow(cx,x1,y1,x2,y2,col,w){cx.strokeStyle=col;cx.fillStyle=col;cx.lineWidth=w||3;cx.beginPath();cx.moveTo(x1,y1);cx.lineTo(x2,y2);cx.stroke();const a=Math.atan2(y2-y1,x2-x1);if(Math.hypot(x2-x1,y2-y1)<4)return;cx.beginPath();cx.moveTo(x2,y2);cx.lineTo(x2-11*Math.cos(a-.4),y2-11*Math.sin(a-.4));cx.lineTo(x2-11*Math.cos(a+.4),y2-11*Math.sin(a+.4));cx.closePath();cx.fill()}
+function analyze(p){const h=(hAD+p.off)*D2R,f=p.phi*D2R,vx=AIR*Math.cos(h)+p.w*Math.cos(f),vy=AIR*Math.sin(h)+p.w*Math.sin(f);
+ const ca=P=>{const t=Math.max(0,Math.min(1.5,(P.x*vx+P.y*vy)/(vx*vx+vy*vy)));return{t,d:Math.hypot(P.x-vx*t,P.y-vy*t)}};
+ return{vx,vy,gs:Math.hypot(vx,vy),dir:(Math.atan2(vy,vx)/D2R+360)%360,doha:ca(PT.DO),ad:ca(PT.AD)}}
+function createSim(host,o){
+ o=Object.assign({w:0,phi:90,off:0,showW:true,showDir:false,showOff:false,showStop:true,ctl:true,maxW:250,presets:[],record:false},o||{});
+ const p={w:o.w,phi:o.phi,off:o.off};
+ host.innerHTML=`<div class="sim"><canvas width="900" height="540"></canvas><div class="sim-grid"><div class="sim-ctl">
+ ${o.ctl&&o.showW?`<label>💨 سرعة الرياح: <b class="vw"></b> km/h<input type="range" class="rw" min="0" max="${o.maxW}" step="5" value="${p.w}"></label>`:''}
+ ${o.ctl&&o.showDir?`<label>🧭 اتجاه هبوب الرياح: <b class="vphi"></b><input type="range" class="rphi" min="0" max="355" step="5" value="${p.phi}"></label>`:''}
+ ${o.ctl&&o.showOff?`<label>✈️ توجيه مقدمة الطائرة: <b class="voff"></b><input type="range" class="roff" min="-40" max="40" step="0.5" value="${p.off}"></label>`:''}
+ ${o.ctl&&o.showStop?`<label>⏱️ أوقف المحاكاة عند (دقيقة): <input type="number" class="in stp" min="1" max="120" placeholder="تلقائي" style="width:100px"></label>`:''}
+ <div class="row"><button class="btn go">▶ تشغيل الرحلة</button><button class="btn ghost rst">↺ إعادة</button><button class="btn ghost rul">📏 مسطرة</button>${o.presets.map((q,i)=>`<button class="btn ghost pre" data-i="${i}">${q.l}</button>`).join('')}${o.record?'<button class="btn sec rec">📝 سجّل المحاولة</button>':''}</div>
+ <div class="mut" style="font-size:13px">📏 فعّل المسطرة ثم انقر نقطتين على الخريطة لقياس المسافة والاتجاه.</div>
+ </div><div class="sim-out"></div></div></div>`;
+ const cv=$('canvas',host),cx=cv.getContext('2d'),out=$('.sim-out',host);
+ let t=0,raf=null,tEnd=65,landed=null,ruler=[],rulerOn=false,msg='';
+ const g=s=>$(s,host);
+ function sync(){if(g('.vw'))g('.vw').textContent=p.w;if(g('.rw'))g('.rw').value=p.w;if(g('.vphi'))g('.vphi').textContent=p.phi+'° (نحو '+dirWord(p.phi)+')';if(g('.rphi'))g('.rphi').value=p.phi;if(g('.voff'))g('.voff').textContent=(p.off>0?'+':'')+p.off+'° '+(p.off>0?'(نحو الشمال)':p.off<0?'(نحو الجنوب)':'(نحو أبوظبي)');if(g('.roff'))g('.roff').value=p.off}
+ function draw(){
+  const a=analyze(p);cx.clearRect(0,0,900,540);cx.fillStyle='#bfe3f2';cx.fillRect(0,0,900,540);
+  cx.beginPath();LAND.forEach((q,i)=>{const [x,y]=w2p(q[0],q[1]);i?cx.lineTo(x,y):cx.moveTo(x,y)});cx.closePath();cx.fillStyle='#f4e8c8';cx.fill();cx.lineWidth=1.5;cx.strokeStyle='#b9a56a';cx.stroke();
+  const [bx,by]=w2p(389,166);cx.beginPath();cx.arc(bx,by,5,0,7);cx.fillStyle='#f4e8c8';cx.fill();cx.stroke();
+  cx.strokeStyle='rgba(0,0,0,.07)';cx.lineWidth=1;for(let x=0;x<=800;x+=200){const [u]=w2p(x,0);cx.beginPath();cx.moveTo(u,0);cx.lineTo(u,540);cx.stroke()}for(let y=-200;y<=200;y+=200){const [,v]=w2p(0,y);cx.beginPath();cx.moveTo(0,v);cx.lineTo(900,v);cx.stroke()}
+  cx.direction='rtl';cx.textAlign='center';cx.font='600 15px Tajawal,sans-serif';
+  let [u,v]=w2p(150,-150);cx.fillStyle='#9a8850';cx.fillText('المملكة العربية السعودية',u,v);
+  [u,v]=w2p(385,235);cx.fillStyle='#4a86a8';cx.fillText('الخليج العربي',u,v);
+  [u,v]=w2p(690,-150);cx.fillStyle='#9a8850';cx.fillText('الإمارات',u,v);
+  [u,v]=w2p(389,166);cx.font='12px Tajawal,sans-serif';cx.fillStyle='#4a6a7a';cx.fillText('البحرين',u+4,v-9);
+  const [rx,ry]=w2p(0,0),[ax,ay]=w2p(PT.AD.x,PT.AD.y);cx.setLineDash([6,6]);cx.strokeStyle='rgba(60,60,60,.45)';cx.lineWidth=1.5;cx.beginPath();cx.moveTo(rx,ry);cx.lineTo(ax,ay);cx.stroke();cx.setLineDash([]);
+  /* مقياس الرسم */
+  cx.strokeStyle='#222';cx.lineWidth=3;cx.beginPath();cx.moveTo(30,512);cx.lineTo(255,512);cx.moveTo(30,505);cx.lineTo(30,519);cx.moveTo(255,505);cx.lineTo(255,519);cx.stroke();cx.fillStyle='#222';cx.font='600 13px Tajawal,sans-serif';cx.fillText('250 km',142,500);
+  /* بوصلة */
+  arrow(cx,860,70,860,30,'#222',3);cx.fillStyle='#222';cx.font='700 14px Tajawal,sans-serif';cx.fillText('ش',860,88);
+  /* الرياح */
+  const [wx,wy]=w2p(-55,235),L_=p.w*.35;arrow(cx,wx,wy,wx+Math.cos(p.phi*D2R)*L_,wy-Math.sin(p.phi*D2R)*L_,'#7a3fb0',4);cx.fillStyle='#7a3fb0';cx.font='700 13px Tajawal,sans-serif';cx.fillText('رياح '+p.w+' km/h',wx+30,wy+34);
+  /* المدن */
+  [PT.RY,PT.AD,PT.DO].forEach(c=>{const [x,y]=w2p(c.x,c.y);cx.beginPath();cx.arc(x,y,7,0,7);cx.fillStyle='#d23b3b';cx.fill();cx.strokeStyle='#fff';cx.lineWidth=2;cx.stroke();cx.fillStyle='#7a1f1f';cx.font='700 16px Tajawal,sans-serif';cx.fillText(c.n,x,y+(c===PT.DO?-14:22))});
+  /* الطائرة */
+  const pos={x:a.vx*t/60,y:a.vy*t/60},[px,py]=w2p(pos.x,pos.y);
+  if(t>0){cx.strokeStyle='#1d5aa8';cx.lineWidth=4;cx.beginPath();cx.moveTo(rx,ry);cx.lineTo(px,py);cx.stroke();arrow(cx,rx,ry+14,px,py+14,'#d64545',2)}
+  cx.save();cx.translate(px,py);cx.rotate(-a.dir*D2R);cx.fillStyle='#12356b';cx.beginPath();cx.moveTo(16,0);cx.lineTo(-10,-10);cx.lineTo(-4,0);cx.lineTo(-10,10);cx.closePath();cx.fill();cx.restore();
+  /* المسطرة */
+  let rtxt='';if(ruler.length){ruler.forEach(r=>{const [x,y]=w2p(r.x,r.y);cx.beginPath();cx.arc(x,y,5,0,7);cx.fillStyle='#e67e00';cx.fill()});if(ruler.length===2){const [x1,y1]=w2p(ruler[0].x,ruler[0].y),[x2,y2]=w2p(ruler[1].x,ruler[1].y);cx.setLineDash([4,4]);cx.strokeStyle='#e67e00';cx.lineWidth=3;cx.beginPath();cx.moveTo(x1,y1);cx.lineTo(x2,y2);cx.stroke();cx.setLineDash([]);const dx=ruler[1].x-ruler[0].x,dy=ruler[1].y-ruler[0].y;rtxt=`<br>📏 المسطرة: <b>${Math.round(Math.hypot(dx,dy))} km</b> باتجاه <b>${dirWord(Math.atan2(dy,dx)/D2R)}</b>`}}
+  const cross=(Math.cos(hAD*D2R)*pos.y-Math.sin(hAD*D2R)*pos.x);
+  out.innerHTML=`⏱️ الزمن: <b>${Math.round(t*10)/10} min</b> — الساعة <b>${clock(t)}</b><br>🛣️ طول المسار المقطوع: <b>${Math.round(a.gs*t/60)} km</b><br>📍 الإزاحة عن الرياض: <b>${Math.round(Math.hypot(pos.x,pos.y))} km</b> نحو ${dirWord(a.dir)}<br>✈️ سرعة الطائرة عن الهواء: <b>800 km/h</b><br>🌍 السرعة المحصلة بالنسبة للأرض: <b>${Math.round(a.gs)} km/h</b> نحو ${dirWord(a.dir)}<br>↕️ الانحراف الجانبي عن خط أبوظبي: <b>${Math.round(cross)} km</b>${rtxt}${msg?'<br>'+msg:''}`}
+ function stop(){cancelAnimationFrame(raf);raf=null}
+ function reset(){stop();t=0;msg='';landed=null;sync();draw()}
+ function run(){stop();const a=analyze(p),stp=+(g('.stp')&&g('.stp').value);const near=a.doha.d<=a.ad.d?{c:'الدوحة',t:a.doha.t,d:a.doha.d}:{c:'أبوظبي',t:a.ad.t,d:a.ad.d};
+  landed=(!stp&&near.d<=40)?near:null;tEnd=stp>0?stp:(landed?landed.t*60:65);t=0;msg='';let last=null;
+  const step=ts=>{if(last==null)last=ts;const dt=(ts-last)/1000;last=ts;t=Math.min(tEnd,t+dt*22);if(t>=tEnd){msg=landed?`🛬 هبطت الطائرة في <b>${landed.c}</b> الساعة <b>${clock(tEnd)}</b> (بعد ${Math.round(tEnd)} دقيقة)`:(stp?'⏸️ توقّفت المحاكاة عند الزمن المحدد.':'⚠️ لم تهبط في أي مطار (أقرب مدينة تبعد '+Math.round(Math.min(a.doha.d,a.ad.d))+' km).');draw();if(o.onFinish)o.onFinish({p:{...p},a,landed,t:tEnd});return}draw();raf=requestAnimationFrame(step)};raf=requestAnimationFrame(step)}
+ function upd(k,v){p[k]=v;reset()}
+ if(g('.rw'))g('.rw').oninput=e=>upd('w',+e.target.value);if(g('.rphi'))g('.rphi').oninput=e=>upd('phi',+e.target.value);if(g('.roff'))g('.roff').oninput=e=>upd('off',+e.target.value);
+ g('.go').onclick=run;g('.rst').onclick=()=>{ruler=[];reset()};
+ g('.rul').onclick=e=>{rulerOn=!rulerOn;e.target.style.background=rulerOn?'#fde7c8':'#fff';cv.style.cursor=rulerOn?'crosshair':'default'};
+ $$('.pre',host).forEach(b=>b.onclick=()=>{Object.assign(p,o.presets[+b.dataset.i],{l:undefined});reset()});
+ if(g('.rec'))g('.rec').onclick=()=>{const a=analyze(p);S.trials.push({w:p.w,phi:p.phi,off:p.off,gs:Math.round(a.gs),dd:Math.round(a.doha.d),da:Math.round(a.ad.d)});save();renderTrials()};
+ cv.addEventListener('pointerdown',e=>{if(!rulerOn)return;const r=cv.getBoundingClientRect(),[x,y]=p2w((e.clientX-r.left)*900/r.width,(e.clientY-r.top)*540/r.height);if(ruler.length>=2)ruler=[];ruler.push({x,y});draw()});
+ const api={p,run,reset,analyze:()=>analyze(p),set(np){Object.assign(p,np);reset()},destroy:stop};SIMS.push(api);reset();return api}
+function renderTrials(){$$('.trl').forEach(el=>{el.innerHTML=S.trials.length?`<table><tr><th>#</th><th>سرعة الرياح</th><th>اتجاه الرياح°</th><th>انحراف التوجيه°</th><th>السرعة المحصلة</th><th>أقرب بُعد عن الدوحة</th><th>أقرب بُعد عن أبوظبي</th></tr>${S.trials.map((r,i)=>`<tr><td>${i+1}</td><td>${r.w}</td><td>${r.phi}</td><td>${r.off}</td><td>${r.gs}</td><td>${r.dd} km</td><td>${r.da} km</td></tr>`).join('')}</table><div class="row"><button class="btn ghost" onclick="S.trials=[];save();renderTrials()">🗑️ مسح الجدول</button></div>`:'<p class="mut">لا توجد محاولات بعد. اضغط «سجّل المحاولة» بعد كل تجربة.</p>'})}
+
+/* ---- لوحة المسافة والإزاحة (قابلة للسحب) ---- */
+function initDD(host){
+ host.innerHTML=`<canvas class="fluid" width="700" height="300"></canvas><div class="sim-out dd" style="margin-top:8px"></div><label class="opt"><input type="checkbox" class="back"> 🔄 عودة إلى نقطة البداية (رحلة ذهاب وإياب)</label><p class="mut" style="font-size:13px">اسحب النقطة البرتقالية لتغيير مسار الطائرة، ولاحظ المسافة (طول المسار) والإزاحة (الخط المستقيم من البداية إلى النهاية).</p>`;
+ const cv=$('canvas',host),cx=cv.getContext('2d'),out=$('.dd',host),A={x:70,y:170},B={x:630,y:170},K=780/560;let W={x:350,y:60},drag=false;
+ const draw=()=>{const back=$('.back',host).checked,E=back?A:B;cx.clearRect(0,0,700,300);cx.fillStyle='#eaf4fb';cx.fillRect(0,0,700,300);cx.direction='rtl';cx.textAlign='center';cx.font='700 14px Tajawal,sans-serif';
+  cx.strokeStyle='#1d5aa8';cx.lineWidth=4;cx.beginPath();cx.moveTo(A.x,A.y);cx.lineTo(W.x,W.y);cx.lineTo(E.x,E.y);cx.stroke();
+  const dsp=Math.hypot(E.x-A.x,E.y-A.y);if(dsp>3)arrow(cx,A.x,A.y+16,E.x,E.y+16,'#d64545',3);
+  [[A,'الرياض (البداية)'],[B,'أبوظبي']].forEach(([c,n])=>{cx.beginPath();cx.arc(c.x,c.y,8,0,7);cx.fillStyle='#d23b3b';cx.fill();cx.fillStyle='#222';cx.fillText(n,c.x,c.y+34)});
+  cx.beginPath();cx.arc(W.x,W.y,11,0,7);cx.fillStyle='#f08a24';cx.fill();cx.strokeStyle='#fff';cx.lineWidth=2;cx.stroke();
+  const path=(Math.hypot(W.x-A.x,W.y-A.y)+Math.hypot(E.x-W.x,E.y-W.y))*K,dis=dsp*K;
+  out.innerHTML=`🛣️ المسافة (طول المسار) = <b>${Math.round(path)} km</b><br>➡️ الإزاحة (الخط المستقيم بداية→نهاية) = <b>${Math.round(dis)} km</b>${dis<1?' (صفر! عدنا إلى نقطة البداية)':' باتجاه '+dirWord(Math.atan2(-(E.y-A.y),E.x-A.x)/D2R)}<br>📌 المسافة ≥ الإزاحة دائماً، وتتساوى فقط عند الحركة في خط مستقيم دون رجوع.`};
+ const pos=e=>{const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)*700/r.width,y:(e.clientY-r.top)*300/r.height}};
+ cv.addEventListener('pointerdown',e=>{const q=pos(e);if(Math.hypot(q.x-W.x,q.y-W.y)<28){drag=true;cv.setPointerCapture(e.pointerId)}});
+ cv.addEventListener('pointermove',e=>{if(!drag)return;const q=pos(e);W={x:Math.max(10,Math.min(690,q.x)),y:Math.max(10,Math.min(290,q.y))};draw()});
+ cv.addEventListener('pointerup',()=>drag=false);$('.back',host).onchange=draw;draw()}
+
+/* ---- مثلث المتجهات ---- */
+function initVec(host){
+ host.innerHTML=`<canvas class="fluid" width="700" height="320"></canvas><div class="grid2"><label>💨 سرعة الرياح: <b class="a">135</b> km/h<input type="range" class="rw" min="0" max="400" step="5" value="135" style="width:100%"></label><label>🧭 اتجاه الرياح: <b class="b">90°</b><input type="range" class="rp" min="0" max="355" step="5" value="90" style="width:100%"></label></div><div class="sim-out vo"></div>`;
+ const cv=$('canvas',host),cx=cv.getContext('2d'),out=$('.vo',host);
+ const draw=()=>{const w=+$('.rw',host).value,phi=+$('.rp',host).value;$('.a',host).textContent=w;$('.b',host).textContent=phi+'° (نحو '+dirWord(phi)+')';
+  const S_=.5,ox=40,oy=250,h=hAD*D2R,f=phi*D2R,v1={x:AIR*Math.cos(h),y:AIR*Math.sin(h)},v2={x:w*Math.cos(f),y:w*Math.sin(f)},R={x:v1.x+v2.x,y:v1.y+v2.y};
+  cx.clearRect(0,0,700,320);cx.fillStyle='#f7fbff';cx.fillRect(0,0,700,320);cx.direction='rtl';cx.textAlign='center';cx.font='700 14px Tajawal,sans-serif';
+  const P=(x,y)=>[ox+x*S_,oy-y*S_];const [x1,y1]=P(v1.x,v1.y),[x2,y2]=P(R.x,R.y);
+  arrow(cx,ox,oy,x1,y1,'#12356b',4);arrow(cx,x1,y1,x2,y2,'#7a3fb0',4);arrow(cx,ox,oy+10,x2,y2+10,'#d64545',4);
+  cx.fillStyle='#12356b';cx.fillText('سرعة الطائرة 800',(ox+x1)/2,(oy+y1)/2+22);cx.fillStyle='#7a3fb0';cx.fillText('سرعة الرياح '+w,(x1+x2)/2+20,(y1+y2)/2-10);cx.fillStyle='#d64545';cx.fillText('المحصلة',(ox+x2)/2,(oy+y2)/2+38);
+  out.innerHTML=`السرعة المحصلة بالنسبة للأرض = <b>${Math.round(Math.hypot(R.x,R.y))} km/h</b> نحو <b>${dirWord(Math.atan2(R.y,R.x)/D2R)}</b> (زاوية ${Math.round((Math.atan2(R.y,R.x)/D2R+360)%360)}°)`};
+ $('.rw',host).oninput=draw;$('.rp',host).oninput=draw;draw()}
+
+/* ================= المهام (المرحلة 3) ================= */
+const sameDir=['الشرق','الغرب','الشمال','الجنوب'];
+const TASKS=[
+{id:'t1',type:'num',unit:'km',min:700,max:860,q:'قِس على الخريطة المسافة التي تقطعها الطائرة من الرياض إلى أبوظبي.',h1:'فعّل المسطرة 📏 وانقر على الرياض ثم أبوظبي، أو قارن الطول بمقياس الرسم (250 km) على الخريطة وعدّ كم مرة يتكرر.',h2:'استخدم مقياس الرسم: كم مرة يتكرر طول 250 km بين المدينتين؟',ex:'المسافة ≈ 780 km (يُقبل ±70 km حسب دقة القياس).'},
+{id:'t2',type:'num',unit:'km',min:700,max:860,q:'ما مقدار إزاحة الطائرة عند عودتها من أبوظبي إلى الرياض؟',h1:'الإزاحة = طول الخط المستقيم الواصل من نقطة البداية (أبوظبي) إلى نقطة النهاية (الرياض).',h2:'ارسم خطاً مستقيماً من نقطة البداية إلى النهاية.',ex:'مقدار الإزاحة ≈ 780 km، وهو يساوي المسافة هنا لأن المسار مستقيم.'},
+{id:'t2b',type:'choice',opts:sameDir,correct:1,q:'ما اتجاه هذه الإزاحة (من أبوظبي إلى الرياض)؟',h1:'أبوظبي تقع شرق الرياض، فإذا انطلقت منها نحو الرياض فإنك تتجه عكس الشرق.',h2:'حدّد موقع نقطة النهاية بالنسبة لنقطة البداية.',ex:'الاتجاه نحو الغرب (مع انحراف طفيف نحو الشمال).'},
+{id:'t3',type:'num',unit:'دقيقة',range:()=>{const d=+S.ans.t1||780,e=d/AIR*60,tl=Math.max(4,e*.07);return[e-tl,e+tl]},q:'لو لم تهبّ رياح، فكم دقيقة تستغرق الرحلة من الرياض إلى أبوظبي بسرعة 800 km/h؟ (ثم أوجد وقت الوصول الساعة 08:00 + الزمن)',h1:'الزمن = المسافة ÷ السرعة. حوّل الناتج من الساعات إلى دقائق بضربه في 60. استخدم المسافة التي قستَها في السؤال الأول.',h2:'الزمن = المسافة ÷ السرعة (ثم × 60 للدقائق).',ex:'t = 780 ÷ 800 ≈ 0.98 h ≈ 58–59 دقيقة، فتصل قرابة 08:59.'},
+{id:'t4',type:'num',unit:'km',min:430,max:545,q:'هبطت الطائرة في الدوحة بسبب الرياح. ما مقدار الإزاحة من الدوحة إلى الرياض؟',h1:'استخدم المسطرة 📏 بين الدوحة والرياض أو مقياس الرسم 250 km.',h2:'قِس الخط المستقيم بين الدوحة والرياض.',ex:'مقدار الإزاحة ≈ 485–490 km.'},
+{id:'t4b',type:'choice',opts:sameDir,correct:1,q:'ما اتجاه إزاحة الدوحة ← الرياض؟',h1:'الدوحة في الشرق، والرياض في الغرب بالنسبة لها.',h2:'الرياض تقع في أي جهة بالنسبة للدوحة؟',ex:'الاتجاه نحو الغرب (غرب-جنوب غرب تقريباً).'},
+{id:'t5',type:'num',unit:'km/h',min:100,max:170,q:'(باستخدام المحاكاة) اضبط الرياح بحيث تهبط الطائرة في الدوحة. ما سرعة الرياح اللازمة؟',h1:'اجعل اتجاه الرياح 90° (من الجنوب نحو الشمال) وزِد سرعتها تدريجياً حتى تظهر رسالة «هبطت في الدوحة».',h2:'الرياح الجنوبية تهبّ نحو أي اتجاه؟ زِد سرعتها حتى يلامس المسار الدوحة.',ex:'سرعة الرياح ≈ 135 km/h.'},
+{id:'t6',type:'num',unit:'km/h',min:795,max:820,q:'ما سرعة الطائرة بالنسبة للأرض (السرعة المحصلة) عند الهبوط في الدوحة؟',h1:'اقرأها مباشرة من لوحة النتائج بعد تشغيل الرحلة: «السرعة المحصلة بالنسبة للأرض».',h2:'ابحث في لوحة النتائج عن السرعة بالنسبة للأرض.',ex:'≈ 806 km/h؛ أكبر قليلاً من 800 لأن الرياح أضافت مركّبة شمالية.'},
+{id:'t7',type:'num',unit:'دقيقة',min:30,max:43,q:'بعد كم دقيقة من الإقلاع (08:00) هبطت الطائرة في الدوحة؟',h1:'اقرأ الزمن من الرسالة التي تظهر عند الهبوط، أو احسبه: الإزاحة ÷ السرعة المحصلة × 60.',h2:'الزمن = الإزاحة (≈ 489 km) ÷ السرعة المحصلة.',ex:'≈ 36 دقيقة، أي الهبوط قرابة 08:36.'}];
+function taskCard(t){const l=L(),v=S.ans[t.id];
+ const inp=t.type==='num'?`<input type="number" step="any" class="in" data-task="${t.id}" value="${v??''}"> ${t.unit||''}`:`<select class="in" data-task="${t.id}"><option value="">اختر…</option>${t.opts.map((o,i)=>`<option value="${i}" ${String(v)===String(i)?'selected':''}>${o}</option>`).join('')}</select>`;
+ const hint=l===1?`<div class="hint on">💡 ${t.h1}</div>`:l===2?`<button class="btn ghost" data-h="${t.id}" style="padding:2px 10px;font-size:13px">💡 تلميح</button><div class="hint" id="h_${t.id}">${t.h2}</div>`:'';
+ const st=S.ok[t.id];
+ return `<div class="task ${st?'okc':''}" id="tk_${t.id}"><div><b>${t.q}</b></div>${hint}<div class="row">${inp}<button class="btn" data-check="${t.id}">تحقق</button></div><div class="fb ${st===true?'ok':st===false?'bad':''}" id="fb_${t.id}">${st===true?'✅ '+t.ex:st===false?'❌ حاول مرة أخرى.':''}</div></div>`}
+function wireTasks(root){
+ $$('[data-task]',root).forEach(el=>{const f=()=>{S.ans[el.dataset.task]=el.value;save()};el.addEventListener('input',f);el.addEventListener('change',f)});
+ $$('[data-h]',root).forEach(b=>b.onclick=()=>$('#h_'+b.dataset.h).classList.toggle('on'));
+ $$('[data-check]',root).forEach(b=>b.onclick=()=>{const t=TASKS.find(x=>x.id===b.dataset.check),v=S.ans[t.id],fb=$('#fb_'+t.id);
+  if(v===undefined||v===''){fb.className='fb warn';fb.textContent='أدخل إجابتك أولاً.';return}
+  let ok;if(t.type==='num'){const [lo,hi]=t.range?t.range():[t.min,t.max];ok=+v>=lo&&+v<=hi}else ok=+v===t.correct;
+  S.ok[t.id]=ok;save();$('#tk_'+t.id).classList.toggle('okc',ok);fb.className='fb '+(ok?'ok':'bad');fb.innerHTML=ok?'✅ '+t.ex:'❌ غير دقيقة. '+(L()===3?'راجع طريقة تجربتك وقياساتك.':'جرّب مرة أخرى مستعيناً بالتلميح.')})}
+
+/* ================= المراحل ================= */
+const OBJ=[
+['أقيس المسافة بين مدينتين على الخريطة باستخدام مقياس الرسم.',1],
+['أميّز بين المسافة (كمية قياسية) والإزاحة (كمية متجهة).',1],
+['أحدّد إزاحة جسم بمقدارها واتجاهها.',1],
+['أحسب السرعة القياسية وزمن الرحلة من العلاقة: المسافة ÷ الزمن.',1],
+['أميّز بين السرعة القياسية والسرعة المتجهة.',1],
+['أجمع متجهي سرعة الطائرة والرياح لأجد السرعة بالنسبة للأرض.',1],
+['أفسّر سبب اختلاف زمن الرحلة ذهاباً عنه إياباً.',1],
+['أحسب ثابت نابض مضغوط من قانون هوك.',0],
+['أحسب الطاقة الحركية للطائرة لحظة الإقلاع.',0],
+['أستنتج القانون الثالث لنيوتن من اصطدام عربتين.',0]];
+
+function rKWL(r){
+ r.innerHTML=hero('📋 المرحلة الأولى: جدول التعلم الذاتي واستنتاج الأهداف','ابدأ بقراءة المشكلة ثم املأ ما تعرفه وما تريد معرفته، واستنتج بنفسك أهداف النشاط.')
+ +media('kwl','المسافة والإزاحة والسرعة المتجهة شرح','walk')
+ +card('🗺️ المشكلة: رسم مسار الرحلة',`<p>تخيّل أنك الطيّار الذي يقود إحدى الطائرات المقلعة من <b>الرياض إلى أبوظبي</b> الساعة <b>08:00</b> صباحاً بسرعة <b>800 km/h</b>. بعد الإقلاع هبّت رياح عنيفة من الجنوب أبعدت الطائرة عن مسارها فاضطُرّ الطيّار للهبوط في مطار <b>الدوحة</b>.</p>
+ <ul><li>كم تبلغ المسافة من الرياض إلى أبوظبي؟ وما الإزاحة من أبوظبي إلى الرياض؟</li><li>ما الإزاحة من الدوحة إلى الرياض؟</li><li>ما سرعة الطائرة على الأرض؟ ومتى هبطت؟ وكم بلغت سرعة الرياح؟</li><li><b>توسّع أصعب:</b> لماذا يختلف زمن الذهاب إلى أبوظبي عن زمن العودة؟</li></ul><div id="s0"></div>`)
+ +card('📊 جدول التعلم الذاتي (KWL)',`<table><tr><th style="width:33%">K — ماذا أعرف؟</th><th style="width:33%">W — ماذا أريد أن أعرف؟</th><th>L — ماذا تعلّمت؟</th></tr><tr><td>${ta('kwl.k','اكتب ما تعرفه عن الحركة والمسافة والسرعة…',4)}</td><td>${ta('kwl.w','اكتب أسئلتك عن الرحلة والرياح…',4)}</td><td class="mut">🔒 يُعبّأ في المرحلة الأخيرة (ما وراء التفكير)</td></tr></table>`)
+ +card('🎯 استنتج أهداف النشاط',`<p>من خلال المشكلة أعلاه، حدّد الأهداف التي تتوقع أن تتحقق في هذا النشاط (بعضها لا علاقة له به!).</p>${OBJ.map((o,i)=>`<label class="opt"><input type="checkbox" data-oi="${i}" ${S.objSel.includes(i)?'checked':''}> ${o[0]}</label>`).join('')}<div class="row"><button class="btn" id="chkObj">✔ تحقق من استنتاجي</button></div><div id="objfb"></div><p><b>صغ هدفاً واحداً بأسلوبك:</b></p>${ta('kwl.myobj','أستطيع أن …',2)}`)
+ +navBtns(0);
+ createSim($('#s0',r),{ctl:false});bind(r);initMedia(r);
+ $$('[data-oi]',r).forEach(c=>c.onchange=()=>{S.objSel=$$('[data-oi]',r).filter(x=>x.checked).map(x=>+x.dataset.oi);save()});
+ $('#chkObj',r).onclick=()=>{let good=0,bad=0,miss=0;OBJ.forEach((o,i)=>{const s=S.objSel.includes(i);if(s&&o[1])good++;else if(s)bad++;else if(o[1])miss++});
+  $('#objfb').innerHTML=`<div class="fb ${bad||miss?'warn':'ok'}">✅ أهداف صحيحة اخترتها: ${good} من 7 — ❌ أهداف غير مرتبطة اخترتها: ${bad} — ⚠️ أهداف فاتتك: ${miss}.</div><details open><summary>الأهداف الحقيقية للنشاط</summary><ul>${OBJ.filter(o=>o[1]).map(o=>`<li>${o[0]}</li>`).join('')}</ul><p class="mut">الأهداف الثلاثة الأخيرة (النابض، الطاقة الحركية، قانون نيوتن) تخص أنشطة أخرى.</p></details>`}}
+
+const PRE=[
+{b:'تشخيص',q:'سارت سيارة 10 km شرقاً ثم 10 km غرباً. ما مسافتها الكلية وإزاحتها؟',opts:['المسافة 20 km والإزاحة صفر','المسافة صفر والإزاحة 20 km','المسافة 10 km والإزاحة 10 km','المسافة 20 km والإزاحة 20 km'],a:0,why:'المسافة تجمع أطوال المسار، أما الإزاحة فهي الفرق بين الموضع النهائي والابتدائي.'},
+{b:'تشخيص',q:'أي الكميات التالية متجهة؟',opts:['الزمن','الكتلة','السرعة المتجهة','المسافة'],a:2,why:'السرعة المتجهة لها مقدار واتجاه.'},
+{b:'تشخيص',q:'طائرة سرعتها 800 km/h نحو الشرق ورياح 100 km/h نحو الشرق أيضاً. سرعتها بالنسبة للأرض:',opts:['700 km/h','800 km/h','900 km/h','8000 km/h'],a:2,why:'الرياح الخلفية تُضاف إلى سرعة الطائرة: 800 + 100.'}];
+function rHook(r){
+ r.innerHTML=hero('🎣 المرحلة الثانية: التهيئة','استثر فضولك: طائرة تقلع بسرعة 800 km/h… متى ستصل؟ وماذا لو تدخّلت الرياح؟')
+ +media('hook','لماذا تتأخر الطائرة بسبب الرياح المعاكسة شرح','journey')
+ +card('⚡ سؤال البداية',`<p>تقلع الطائرة من الرياض الساعة 08:00 نحو أبوظبي بسرعة 800 km/h. <b>توقّع:</b> بعد كم دقيقة تصل (بدون رياح)؟</p><div class="row"><input type="number" class="in" data-bind="pre.pred" placeholder="توقعك بالدقائق"> دقيقة</div><p>الآن شغّل المحاكاة وقارن توقعك بالنتيجة، ثم حرّك شريط الرياح وراقب ما يحدث.</p><div id="s1"></div><p><b>ماذا لاحظتَ عند هبوب رياح جنوبية؟</b></p>${ta('pre.obs','اكتب ملاحظتك…',3)}`)
+ +card('🧪 اختبار تشخيصي قصير',`<p class="mut">يساعد على اقتراح مستوى الأنشطة المناسب لك (يمكن للمعلم تعديله).</p>${quizHTML('pre',PRE)}<div class="row"><button class="btn" id="gpre">تحقق</button></div><div id="prefb"></div>`)
+ +navBtns(1);
+ createSim($('#s1',r),{w:0,showStop:false});bind(r);bindQuiz(r);initMedia(r);
+ $('#gpre',r).onclick=()=>{const {sc}=gradeQuiz('pre',PRE);const sug=sc===3?3:sc===2?2:1;let txt=`نتيجتك ${sc}/3 → المستوى المقترح: <b>${LV[sug]}</b>.`;
+  if(!(roster[student]&&roster[student].level)&&!S.level){S.level=sug;txt+=' تم اعتماده لك مبدئياً (يمكن تغييره من أعلى الصفحة).'}
+  save();updChip();$('#prefb').innerHTML=`<div class="fb ok">${txt}</div>`}}
+
+function rExplore(r){
+ const l=L(),sty=S.types||{};
+ const pre=grp?`<div class="gcard">👥 مجموعتكم: <b>${grp.name}</b><br>${grp.members.map(n=>n+' — <b>'+roster[n].role+'</b>').join('<br>')}</div>`:roster[student]&&roster[student].group?`<div class="gcard">👥 مجموعتك: <b>${roster[student].group}</b> — دورك: <b>${roster[student].role}</b><br><span class="mut">أعضاء المجموعة: ${Object.keys(roster).filter(n=>roster[n].group===roster[student].group).join('، ')}</span><div class="row"><button class="btn ghost" onclick="openGroups()">👥 إدارة المجموعة</button></div></div>`:'<p class="mut">لم تنضم إلى مجموعة بعد. كوّن مجموعتك مع زملائك، أو انتظر توزيع المعلم.</p><div class="row"><button class="btn sec" onclick="openGroups()">👥 كوّن مجموعتك الآن</button></div>';
+ const sim={1:{showW:true,showDir:false,showOff:false,presets:[{l:'🌬️ رياح جنوبية قوية',w:135,phi:90,off:0}]},2:{showW:true,showDir:true,showOff:false,presets:[]},3:{showW:true,showDir:true,showOff:true,maxW:400,presets:[],record:true}}[l];
+ r.innerHTML=hero('🔍 المرحلة الثالثة: الاستكشاف','استقصِ بنفسك! جرّب في المحاكاة، قِس على الخريطة، وأجب عن أسئلة المشكلة.')
+ +card('🎚️ مستواك ونمط الاستقصاء',`<span class="badge">${LV[l]}</span> <b>${LVD[l]}</b><p>${l===1?'ستجد خطوات وتلميحات ظاهرة وإعدادات مبسّطة للمحاكاة.':l===2?'تلميحات متاحة عند الطلب، وتتحكم في سرعة الرياح واتجاهها.':'استقصاء حر: تتحكم في الرياح واتجاهها وتوجيه الطائرة، وتصمّم تجربتك وتسجّل بياناتك وتصوغ استنتاجك.'}</p>${pre}`)
+ +media('exp','vector addition velocity airplane wind crosswind','vec','vector-addition')
+ +card('🧪 محاكاة الرحلة',`<div id="s2"></div>${l===3?'<h4>📋 جدول بيانات تجاربي</h4><div class="trl"></div>':''}`)
+ +card('📌 المهام (الجزء الأول: القياس على الخريطة)',TASKS.slice(0,6).map(taskCard).join(''))
+ +card('📌 المهام (الجزء الثاني: أثر الرياح)',TASKS.slice(6).map(taskCard).join(''))
+ +card('📝 ورقة الاستقصاء',`<p class="mut">${l===1?'أكمل الجمل التالية معتمداً على بدايات الجمل المقترحة.':l===2?'عبّئ الحقول بعد تجربتك مع المحاكاة.':'صمّم استقصاءك بحرية: سؤالك، فرضيتك، متغيراتك، ملاحظاتك واستنتاجك.'}</p>
+  <b>سؤال الاستقصاء:</b>${ta('insq.q',l===1?'كيف تؤثر سرعة الرياح الجنوبية في …؟':l===2?'اكتب سؤالاً عن أثر الرياح…':'صغ سؤالك البحثي بنفسك',2)}
+  <b>فرضيتي:</b>${ta('insq.hyp',l===1?'أتوقع أنه كلما زادت سرعة الرياح فإن …':'اكتب فرضيتك',2)}
+  <b>المتغيرات (المستقل / التابع / المضبوطة):</b>${ta('insq.vars',l===1?'المستقل: سرعة الرياح — التابع: …':'حدّد المتغيرات',2)}
+  <b>استنتاجي:</b>${ta('insq.concl',l===1?'استنتجت أن …':'اكتب استنتاجك مدعوماً بالبيانات',3)}`)
+ +card('🎛️ لوحة الأنشطة المتنوعة (اختر نشاطين على الأقل)',`<p class="mut">اختر ما يناسب أسلوب تعلّمك: بصري، تجريبي، لفظي، أو منطقي-رياضي.</p>
+  <details><summary>${STY.visual} — صنّف الكميات: قياسية أم متجهة؟</summary>${clsHTML()}</details>
+  <details><summary>${STY.exp} — أثر شدّة الرياح الجنوبية على انحراف الطائرة</summary>${expHTML()}</details>
+  <details><summary>${STY.verbal} — فسّر بكلماتك: المسافة مقابل الإزاحة</summary>${ta('types.verb','اشرح باستخدام رحلة الرياض ← الدوحة. استعمل: المسار، الخط المستقيم، الاتجاه…',4)}<div class="row"><button class="btn" id="gverb">قيّم كتابتي</button></div><div id="verbfb"></div></details>
+  <details><summary>${STY.math} — احسب السرعة المتوسطة</summary><p>قطعت طائرة 600 km في 45 دقيقة بسرعة ثابتة.</p><div class="row">السرعة = <input type="number" class="in" data-bind="types.m1"> km/h &nbsp; = <input type="number" class="in" data-bind="types.m2"> m/s</div><div class="row"><button class="btn" id="gmath">تحقق</button></div><div id="mathfb"></div></details>`)
+ +navBtns(2);
+ const sm=createSim($('#s2',r),Object.assign({},sim,{onFinish:()=>{}}));
+ bind(r);initMedia(r);wireTasks(r);renderTrials();wireTypes(r);}
+const CLS=[['المسافة','s'],['الإزاحة','v'],['السرعة القياسية','s'],['السرعة المتجهة','v'],['الزمن','s'],['القوة','v'],['الكتلة','s'],['التسارع','v']];
+function clsHTML(){return `<table>${CLS.map((c,i)=>`<tr><td class="l">${c[0]}</td><td><label><input type="radio" name="cls${i}" data-cls="${i}" value="s" ${(S.types.cls||{})[i]==='s'?'checked':''}> قياسية</label></td><td><label><input type="radio" name="cls${i}" data-cls="${i}" value="v" ${(S.types.cls||{})[i]==='v'?'checked':''}> متجهة</label></td></tr>`).join('')}</table><div class="row"><button class="btn" id="gcls">تحقق</button></div><div id="clsfb"></div>`}
+const EXW=[0,60,120,180];
+function expHTML(){return `<p>في المحاكاة: اجعل اتجاه الرياح 90° (شمالاً) واكتب <b>30</b> في خانة «أوقف المحاكاة عند». شغّل الرحلة لكل سرعة رياح وسجّل «الانحراف الجانبي عن خط أبوظبي».</p><table><tr><th>سرعة الرياح (km/h)</th>${EXW.map(w=>`<th>${w}</th>`).join('')}</tr><tr><td>الانحراف (km)</td>${EXW.map((w,i)=>`<td><input type="number" class="in" style="width:80px" data-bind="types.ex${i}"></td>`).join('')}</tr></table><p>العلاقة بين سرعة الرياح والانحراف:</p><select class="in" data-bind="types.exrel"><option value="">اختر</option><option value="1">طردية (يزداد الانحراف بزيادة الرياح)</option><option value="2">عكسية</option><option value="3">لا علاقة</option></select><div class="row"><button class="btn" id="gexp">تحقق</button></div><div id="expfb"></div>`}
+function wireTypes(r){
+ $$('[data-cls]',r).forEach(e=>e.onchange=()=>{(S.types.cls=S.types.cls||{})[e.dataset.cls]=e.value;save()});
+ $('#gcls',r).onclick=()=>{let n=0;CLS.forEach((c,i)=>{if((S.types.cls||{})[i]===c[1])n++});$('#clsfb').innerHTML=`<div class="fb ${n===8?'ok':'warn'}">${n===8?'✅ ممتاز! ':'⚠️ '}أصبت ${n} من 8. تذكّر: الكمية المتجهة لها مقدار واتجاه (الإزاحة، السرعة المتجهة، القوة، التسارع).</div>`};
+ $('#gexp',r).onclick=()=>{let n=0;EXW.forEach((w,i)=>{const v=+S.types['ex'+i];if(S.types['ex'+i]!==undefined&&S.types['ex'+i]!==''&&Math.abs(v-w*.5)<=9)n++});const rel=S.types.exrel==='1';$('#expfb').innerHTML=`<div class="fb ${n===4&&rel?'ok':'warn'}">قياسات صحيحة: ${n}/4 — العلاقة: ${rel?'صحيحة ✅ (الانحراف ≈ سرعة الرياح × الزمن = w × 0.5 h)':'راجع اختيارك ⚠️'}</div>`};
+ $('#gverb',r).onclick=()=>{const t=S.types.verb||'';const rb=[['ذكر المسار/طول المسار',/مسار|طول المسار|الطريق/],['ذكر الخط المستقيم أو أقصر مسافة',/مستقيم|أقصر/],['ذكر الاتجاه',/اتجاه|غرب|شرق/],['ربط الشرح بالرياض/الدوحة',/الرياض|الدوحة/]];const ok=rb.filter(x=>x[1].test(t));$('#verbfb').innerHTML=`<div class="fb ${ok.length>=3?'ok':'warn'}">${rb.map(x=>(x[1].test(t)?'✅ ':'⬜ ')+x[0]).join('<br>')}</div>`};
+ $('#gmath',r).onclick=()=>{const a=+S.types.m1,b=+S.types.m2;$('#mathfb').innerHTML=`<div class="fb ${a>=795&&a<=805&&b>=220&&b<=224?'ok':'warn'}">${a>=795&&a<=805?'✅ السرعة = 600 ÷ 0.75 = 800 km/h':'⚠️ حوّل 45 دقيقة إلى 0.75 ساعة ثم اقسم'} — ${b>=220&&b<=224?'✅ 800 ÷ 3.6 ≈ 222 m/s':'⚠️ للتحويل إلى m/s اقسم على 3.6'}</div>`}}
+
+function rExplain(r){
+ r.innerHTML=hero('💡 المرحلة الرابعة: الشرح والتفسير','اربط ما اكتشفتَه بالمفاهيم العلمية: المسافة، الإزاحة، السرعة القياسية، السرعة المتجهة، وجمع المتجهات.')
+ +media('exl','المسافة والإزاحة السرعة القياسية والسرعة المتجهة','walk')
+ +card('🧭 جرّب بنفسك: المسافة والإزاحة',`<div id="dd"></div>`)
+ +card('📚 المفاهيم الأساسية',`
+  <details open><summary>المسافة (d) — كمية قياسية</summary><p>طول المسار الفعلي الذي سلكه الجسم. لها مقدار فقط ولا تكون سالبة.</p></details>
+  <details open><summary>الإزاحة (Δx) — كمية متجهة</summary><p>التغير في الموضع: الخط المستقيم من نقطة البداية إلى النهاية، ولها مقدار واتجاه. في رحلة الذهاب والإياب تساوي صفراً.</p><div class="eq">Δx = x<sub>f</sub> − x<sub>i</sub></div></details>
+  <details open><summary>السرعة القياسية والسرعة المتجهة</summary><div class="eq">السرعة القياسية = المسافة ÷ الزمن</div><div class="eq">السرعة المتجهة = الإزاحة ÷ الزمن</div><p>الأولى مقدار فقط، والثانية مقدار واتجاه.</p></details>
+  <details open><summary>جمع المتجهات: الطائرة والرياح</summary><p>سرعة الطائرة بالنسبة للأرض = سرعتها بالنسبة للهواء + سرعة الرياح (جمع متجهات: رأس لذيل).</p><div class="eq">v<sub>أرض</sub> = v<sub>هواء</sub> + v<sub>رياح</sub></div><div id="vec"></div></details>
+  <details><summary>لماذا يختلف زمن الذهاب عن العودة؟</summary><p>الرياح الخلفية تزيد سرعة الطائرة بالنسبة للأرض، والمعاكسة تنقصها. فإذا كانت السرعة 800 km/h والرياح 100 km/h فالذهاب بسرعة 900 km/h والعودة بسرعة 700 km/h، فيختلف الزمن رغم تساوي المسافة.</p></details>`)
+ +card('✏️ مثال محلول: هبوط الدوحة',`<ol><li>الإزاحة من الرياض إلى الدوحة: (485 km شرقاً، 64 km شمالاً) → المقدار = √(485² + 64²) ≈ <b>489 km</b> بزاوية ≈ 7.5° شمال الشرق.</li><li>الطيار يوجّه الطائرة نحو أبوظبي (≈ 2° جنوب الشرق)، فمركّبتها الشمالية ≈ −30 km/h.</li><li>لكي يصبح مسارها نحو الدوحة تلزم مركّبة شمالية للسرعة المحصلة ≈ 106 km/h.</li><li>مركّبة الرياح الشمالية = 106 − (−30) ≈ <b>135 km/h</b>.</li><li>السرعة المحصلة ≈ √(799² + 106²) ≈ <b>806 km/h</b>، والزمن = 489 ÷ 806 ≈ 0.61 h ≈ <b>36 دقيقة</b> → الهبوط 08:36.</li></ol><p class="mut">لاحظ أن الرياح العمودية تغيّر <b>اتجاه</b> الحركة أكثر مما تغيّر مقدار السرعة.</p>`)
+ +card('✅ اختبر فهمك',quizHTML('chk',CHK)+'<div class="row"><button class="btn" id="gchk">تحقق</button></div>')
+ +navBtns(3);
+ initDD($('#dd',r));initVec($('#vec',r));bindQuiz(r);initMedia(r);$('#gchk',r).onclick=()=>gradeQuiz('chk',CHK)}
+const CHK=[
+{b:'فهم',q:'عند جمع سرعة الطائرة وسرعة الرياح نستخدم:',opts:['الجمع العادي دائماً','جمع المتجهات (المقدار والاتجاه معاً)','الطرح دائماً','الضرب'],a:1,why:'السرعتان متجهتان فتُجمعان جمعاً اتجاهياً.'},
+{b:'فهم',q:'الرياح المعاكسة لاتجاه الطائرة تجعل سرعتها بالنسبة للأرض:',opts:['أقل','أكبر','كما هي','صفراً دائماً'],a:0,why:'تُطرح سرعة الرياح من سرعة الطائرة.'}];
+
+function solveOff(w,phi){let best=0,bd=1e9;for(let o=-40;o<=40;o+=.1){const d=analyze({w,phi,off:o}).ad.d;if(d<bd){bd=d;best=o}}return Math.round(best*10)/10}
+const C1=[
+{b:'تحليل',q:'رياح غربية سرعتها 100 km/h تهبّ نحو الشرق. ما زمن الذهاب من الرياض إلى أبوظبي؟ (دقيقة)',type:'num',unit:'دقيقة',min:50,max:54,why:'السرعة 900 km/h → 780 ÷ 900 × 60 ≈ 52 دقيقة.'},
+{b:'تحليل',q:'ما زمن العودة من أبوظبي إلى الرياض؟ (دقيقة)',type:'num',unit:'دقيقة',min:65,max:69,why:'السرعة 700 km/h → 780 ÷ 700 × 60 ≈ 67 دقيقة.'},
+{b:'تحليل',q:'ما السرعة القياسية المتوسطة للرحلة كاملة (ذهاباً وإياباً)؟',type:'num',unit:'km/h',min:780,max:795,why:'المسافة الكلية 1560 km ÷ الزمن الكلي ≈ 119 دقيقة ≈ 787 km/h (أقل من 800).'},
+{b:'تقويم',q:'ما السرعة المتجهة المتوسطة للرحلة كاملة؟',opts:['787 km/h','800 km/h','صفر','900 km/h'],a:2,why:'الإزاحة الكلية صفر، فالسرعة المتجهة المتوسطة صفر.'},
+{b:'تحليل',q:'سبب اختلاف زمن الذهاب عن العودة هو أن:',opts:['السرعة بالنسبة للأرض تزيد مع الرياح الخلفية وتقل مع المعاكسة','المسافة تختلف بين الذهاب والعودة','الإزاحة تختلف في الاتجاهين','الطائرة تغيّر سرعتها بالنسبة للهواء'],a:0,why:'تُجمع سرعة الرياح اتجاهياً مع سرعة الطائرة، فتتغير السرعة المحصلة.'}];
+const C3=[
+{b:'تقويم',q:'«إذا زادت الرياح الخلفية في الذهاب بقدر ما تزيد الرياح المعاكسة في العودة فإن زمن الرحلة الكلي لا يتأثر».',opts:['صحيحة','خاطئة'],a:1,why:'الزمن الكلي يزداد: الوقت الضائع في العودة أكبر من الوقت الموفَّر في الذهاب.'},
+{b:'تقويم',q:'«طول المسار دائماً أكبر من أو يساوي مقدار الإزاحة».',opts:['صحيحة','خاطئة'],a:0,why:'أقصر مسافة بين نقطتين هي الخط المستقيم.'},
+{b:'تقويم',q:'«الرياح العمودية على اتجاه الطائرة تغيّر مقدار سرعتها المحصلة تغييراً كبيراً».',opts:['صحيحة','خاطئة'],a:1,why:'تغيّر الاتجاه أساساً؛ فمع رياح 135 km/h يصبح المقدار 806 بدل 800 فقط.'}];
+function rEnrich(r){
+ const l=L(),sc={1:{w:100,phi:90},2:{w:150,phi:90},3:{w:120,phi:45}}[l];
+ r.innerHTML=hero('🚀 المرحلة الخامسة: الإثراء والتوسع','تحديات للتفكير العليا: التحليل والتركيب والتقويم والإبداع. (مستواك: '+LV[l]+')')
+ +media('enr','how pilots correct for crosswind heading','vec','vector-addition')
+ +card('🔬 التحدي 1 (تحليل): لماذا يختلف زمن الذهاب عن العودة؟',`<p>«توسّع أصعب» من النشاط. غيّر سرعة الرياح الغربية (نحو الشرق) وراقب الأزمنة.</p><label>💨 سرعة الرياح: <b id="rtw">100</b> km/h<input type="range" id="rt" min="0" max="300" step="10" value="100" style="width:100%"></label><div id="rtout"></div>${quizHTML('c1',C1)}<div class="row"><button class="btn" id="gc1">تحقق</button></div>`)
+ +card('🧩 التحدي 2 (تركيب): صمّم خطة طيران تعوّض الرياح',`<p>تهبّ رياح سرعتها <b>${sc.w} km/h</b> ${l===3?'باتجاه 45° (نحو الشمال الشرقي)':'من الجنوب (نحو الشمال)'}. <b>مهمتك:</b> اضبط توجيه مقدمة الطائرة بحيث تصل إلى <b>أبوظبي</b> (يبعد المسار ≤ 25 km). ${l===1?'💡 تلميح: وجّه الطائرة قليلاً نحو الجهة المعاكسة لاتجاه الرياح.':l===2?'💡 تلميح: ما اتجاه انجراف الطائرة؟ عوّضه بالتوجيه عكسه.':'مستوى متقدم: لا تلميحات — حلّل المركّبات أولاً.'}</p><div id="s4"></div><div class="row"><button class="btn sec" id="ck4">✔ تحقق من خطتي</button><button class="btn ghost" id="sv4">👁️ الحل النموذجي</button></div><div id="fb4"></div><p><b>فسّر خطتك:</b></p>${ta('c.plan','لماذا اخترت هذا التوجيه؟ كيف أثّرت الرياح في المركّبات؟',3)}`)
+ +card('⚖️ التحدي 3 (تقويم): احكم على العبارات',quizHTML('c3',C3)+'<div class="row"><button class="btn" id="gc3">تحقق</button></div>')
+ +(l>=2?card('🎨 التحدي 4 (إبداع): ألّف مسألتك',`<p>ألّف مسألة رحلة جوية جديدة (مثلاً الرياض ← الدوحة ← المنامة) تتضمن <b>مسافة وإزاحة وسرعة محصلة</b>، ثم تبادلها مع مجموعتك لحلّها.</p>${ta('c.create','نص المسألة والحل النموذجي…',6)}<p><b>قائمة مراجعة:</b></p>${['تتضمن المسألة معطيات واضحة (سرعة، زمن/مسافة، رياح)','تسأل عن الإزاحة بمقدارها واتجاهها','تتطلب جمع متجهات','حللتُ المسألة بنفسي وتحققتُ من الناتج'].map((t,i)=>`<label class="opt"><input type="checkbox" data-bind="c.r${i}"> ${t}</label>`).join('')}`):card('🎨 التحدي 4 (اختياري)','<p class="mut">ألّف مسألة رحلة بسيطة وشاركها مع زميلك. (يتفعّل بشكل كامل للمستويين المتوسط والمتقدم)</p>'))
+ +(l===3?card('🏆 التحدي 5 (استقصاء حر – للمتقدمين)',`<p><b>سؤال مفتوح:</b> ما أكبر سرعة رياح عمودية على مسار الطائرة يمكن للطيّار أن يعوّضها ويظل قادراً على بلوغ هدفه؟ صمّم تجربة في المحاكاة (سرعة الرياح حتى 400 km/h) واستخدم علاقة المركّبات لتبرير توقعك عند 800 km/h.</p>${ta('c.free','فرضيتك → تجربتك → بياناتك → استنتاجك…',7)}<div class="row"><button class="btn ghost" id="rvf">عرض الإجابة النموذجية</button></div><div id="rvfb"></div>`):card('🔒 التحدي 5','<p class="mut">متاح لمستوى «متقدم» — استقصاء حر مفتوح النهاية.</p>'))
+ +navBtns(4);
+ const rt=$('#rt',r),draw=()=>{const w=+rt.value;$('#rtw').textContent=w;const tg=780/(AIR+w)*60,tr=780/(AIR-w)*60,t0=780/AIR*60,tot=tg+tr,mx=Math.max(tr,t0*2,tg+tr)/1;
+  $('#rtout').innerHTML=`<div class="row"><span style="width:150px">الذهاب (${AIR+w} km/h)</span><div class="bar" style="width:${tg/mx*60}%">${Math.round(tg)} د</div></div><div class="row"><span style="width:150px">العودة (${AIR-w} km/h)</span><div class="bar" style="width:${tr/mx*60}%;background:var(--orange)">${Math.round(tr)} د</div></div><div class="sim-out">الزمن الكلي: <b>${Math.round(tot)} د</b> مقابل <b>${Math.round(t0*2)} د</b> بدون رياح — السرعة القياسية المتوسطة: <b>${Math.round(1560/(tot/60))} km/h</b> — السرعة المتجهة المتوسطة: <b>صفر</b></div>`};rt.oninput=draw;draw();
+ const sm=createSim($('#s4',r),{w:sc.w,phi:sc.phi,showW:false,showDir:false,showOff:true,showStop:false});
+ $('#ck4',r).onclick=()=>{const a=analyze(sm.p);const ok=a.ad.d<=25;S.c.ok4=ok;save();$('#fb4').innerHTML=`<div class="fb ${ok?'ok':'warn'}">${ok?`✅ نجحت! أقرب بُعد عن أبوظبي ${Math.round(a.ad.d)} km، وزمن الوصول ≈ ${Math.round(a.ad.t*60)} دقيقة (الساعة ${clock(a.ad.t*60)}) بسرعة محصلة ${Math.round(a.gs)} km/h.`:`⚠️ ما زالت الطائرة تبتعد ${Math.round(a.ad.d)} km عن أبوظبي. غيّر التوجيه وشغّل الرحلة.`}</div>`};
+ $('#sv4',r).onclick=()=>{const o=solveOff(sc.w,sc.phi);$('#fb4').innerHTML=`<div class="fb warn">💡 توجيه مناسب ≈ <b>${o}°</b> (${o<0?'نحو الجنوب':'نحو الشمال'} من خط أبوظبي). عندها تلغي مركّبةُ الرياح العمودية الانجرافَ.</div>`;sm.set({off:Math.max(-40,Math.min(40,o))})};
+ bind(r);bindQuiz(r);initMedia(r);
+ $('#gc1',r).onclick=()=>gradeQuiz('c1',C1);$('#gc3',r).onclick=()=>gradeQuiz('c3',C3);
+ const rv=$('#rvf',r);if(rv)rv.onclick=()=>{$('#rvfb').innerHTML='<div class="fb ok">الإجابة النموذجية: يلزم أن تكون مركّبة سرعة الطائرة العمودية على المسار مساوية لسرعة الرياح العمودية: 800·sinθ = w، أي sinθ = w/800. فإذا كانت w < 800 يوجد حل (θ = sin⁻¹(w/800))، وعند w = 800 تصبح θ = 90° ولا يتبقى تقدّم نحو الهدف، وعندما w > 800 يستحيل بلوغ الهدف.</div>'}}
+
+const FINAL=[
+{b:'تذكر',q:'الإزاحة كمية:',opts:['قياسية تُحدّد بمقدارها فقط','متجهة لها مقدار واتجاه','ليس لها وحدة','تساوي الزمن ÷ المسافة'],a:1,why:'الإزاحة متجهة: مقدار واتجاه.'},
+{b:'فهم',q:'طائرة أقلعت من الرياض وحلّقت فوق عدة مدن ثم عادت إلى الرياض. إزاحتها الكلية:',opts:['تساوي طول المسار كله','صفر','نصف طول المسار','لا يمكن تحديدها'],a:1,why:'نقطة البداية هي نقطة النهاية.'},
+{b:'تطبيق',q:'قطعت طائرة 1560 km (ذهاباً وإياباً) خلال 2 h. سرعتها القياسية المتوسطة:',type:'num',unit:'km/h',min:775,max:785,why:'1560 ÷ 2 = 780 km/h.'},
+{b:'تطبيق',q:'مقياس رسم خريطة 1 cm : 100 km. المسافة بين مدينتين على الخريطة 7.8 cm. المسافة الحقيقية:',type:'num',unit:'km',min:775,max:785,why:'7.8 × 100 = 780 km.'},
+{b:'تطبيق',q:'طائرة تطير بسرعة 800 km/h شرقاً ورياح 100 km/h شمالاً. سرعتها بالنسبة للأرض تقريباً:',opts:['700 km/h','806 km/h','900 km/h','800 km/h تماماً'],a:1,why:'√(800² + 100²) ≈ 806 km/h.'},
+{b:'تحليل',q:'رياح جنوبية تهبّ على طائرة موجّهة نحو الشرق دون تعويض. يحدث لمسارها أن:',opts:['ينحرف نحو الشمال','ينحرف نحو الجنوب','لا يتغير','يرجع نحو الغرب'],a:0,why:'الرياح الجنوبية تدفع الطائرة نحو الشمال.'},
+{b:'تحليل',q:'زمن رحلة بين مدينتين: ذهاباً 52 دقيقة وإياباً 65 دقيقة بنفس سرعة الطائرة عن الهواء. التفسير الأنسب:',opts:['رياح تهبّ تقريباً في اتجاه رحلة الذهاب','رياح تهبّ عكس رحلة الذهاب','المسافة مختلفة','الإزاحة أكبر في الذهاب'],a:0,why:'الذهاب أسرع بسبب رياح خلفية، والعودة أبطأ بسبب رياح معاكسة.'},
+{b:'تركيب',q:'تريد الوصول إلى مدينة شرقاً تماماً وتهبّ رياح جنوبية. أفضل خطة:',opts:['التوجيه شرقاً تماماً','التوجيه نحو الجنوب الشرقي قليلاً لتعويض الانجراف','التوجيه نحو الشمال الشرقي','زيادة الارتفاع فقط'],a:1,why:'تُعوَّض مركّبة الرياح الشمالية بمركّبة جنوبية من سرعة الطائرة.'},
+{b:'تقويم',q:'قال زميلك: «السرعة المتجهة للطائرة 800 km/h دائماً». هذه العبارة:',opts:['صحيحة','خاطئة؛ فهي سرعتها عن الهواء وتتغير بالنسبة للأرض بفعل الرياح','صحيحة في الرحلات الطويلة فقط','خاطئة لأن السرعة المتجهة لا تُقاس بـ km/h'],a:1,why:'السرعة بالنسبة للأرض = سرعة الطائرة + سرعة الرياح (متجهياً).'},
+{b:'تقويم',q:'مقارنةً بغياب الرياح، فإن زمن رحلة الذهاب والإياب في وجود رياح ثابتة:',opts:['أقصر','أطول','يساوي','لا يمكن المقارنة'],a:1,why:'الزمن الموفَّر في الذهاب أقل من الزمن الضائع في العودة.'}];
+function rEval(r){
+ r.innerHTML=hero('📝 المرحلة السادسة: التقويم','10 أسئلة تغطي مستويات التفكير من التذكر حتى التقويم. استعن بالمحاكاة إن احتجت.')
+ +media('ev','airplane wind vector addition ground speed','dd')
+ +card('🧪 محاكاة للاستعانة بها',`<details><summary>افتح محاكاة الرحلة</summary><div id="s5"></div></details>`)
+ +card('📋 الأسئلة',quizHTML('final',FINAL)+'<div class="row"><button class="btn ok" id="gfin">تسليم وتصحيح</button></div><div id="finfb"></div>')
+ +navBtns(5);
+ createSim($('#s5',r),{showDir:true,showOff:true,maxW:400});bindQuiz(r);initMedia(r);
+ const show=()=>{if(!S.final)return;const f=S.final,by={};f.items.forEach((o,i)=>{const b=FINAL[i].b;by[b]=by[b]||[0,0];by[b][1]++;if(o)by[b][0]++});
+  $('#finfb').innerHTML=`<div class="fb ${f.sc>=8?'ok':'warn'}"><b>الدرجة: ${f.sc} / 10</b><table><tr>${Object.keys(by).map(k=>`<th>${k}</th>`).join('')}</tr><tr>${Object.keys(by).map(k=>`<td>${by[k][0]}/${by[k][1]}</td>`).join('')}</tr></table>${f.sc>=8?'🌟 أداء متميز!':f.sc>=5?'👍 جيد، راجع الأسئلة التي أخطأت فيها في مرحلة الشرح.':'📚 ننصحك بإعادة مرحلتي الاستكشاف والشرح ثم المحاولة مجدداً.'}</div><div class="row"><button class="btn sec" id="mailres">✉️ إرسال النتيجة للمعلم</button><button class="btn ghost" id="cpres">📋 نسخ النتيجة</button></div>`;
+  const txt=resultText();$('#mailres').onclick=()=>mailTo('نتيجة تقويم النشاط الرابع – '+student,txt);$('#cpres').onclick=()=>copyText(txt)};
+ $('#gfin',r).onclick=()=>{const {sc,res}=gradeQuiz('final',FINAL);S.final={sc,items:res,time:new Date().toLocaleString('ar-SA')};save();show()};
+ show()}
+const resultText=()=>`${grp?'المجموعة: '+grp.name+' ('+grp.members.join('، ')+')':'الطالب: '+student}\nالمستوى: ${LV[L()]}\nالمجموعة: ${grp?grp.name:((roster[student]&&roster[student].group)||'—')}\nنتيجة التقويم: ${S.final?S.final.sc+' / 10':'لم يُسلَّم بعد'}\nمهام الاستكشاف الصحيحة: ${Object.values(S.ok).filter(Boolean).length} / ${TASKS.length}\nتحدي التعويض: ${S.c.ok4?'نجح':'—'}`;
+function mailTo(sub,body){const em=getEmail();location.href='mailto:'+em+'?subject='+encodeURIComponent(sub)+'&body='+encodeURIComponent(body)}
+
+const STRAT=['شاهدتُ الفيديو والمحاكاة','قِستُ على الخريطة','جرّبتُ عدة قيم في المحاكاة','ناقشتُ زملائي في المجموعة','رسمتُ المتجهات','أعدتُ حل الأسئلة الخاطئة'];
+function rMeta(r){
+ r.innerHTML=hero('🧠 المرحلة السابعة: ما وراء التفكير','فكّر في تعلّمك: ماذا تعلّمت؟ كيف تعلّمت؟ وما خطوتك التالية؟')
+ +media('meta','الإزاحة والسرعة مراجعة','journey')
+ +card('📊 جدول التعلم – عمود L',`<table><tr><th>K — ماذا كنت أعرف؟</th><th>W — ماذا أردت أن أعرف؟</th><th>L — ماذا تعلّمت؟</th></tr><tr><td class="l" id="kk"></td><td class="l" id="ww"></td><td>${ta('kwl.l','اكتب ما تعلّمته (المسافة، الإزاحة، السرعة المتجهة، أثر الرياح…)',5)}</td></tr></table>`)
+ +card('🎯 قيّم ثقتك بكل هدف (1 = غير واثق … 5 = واثق جداً)',OBJ.filter(o=>o[1]).map((o,i)=>`<div class="row"><span style="flex:1;min-width:240px">${o[0]}</span><input type="range" min="1" max="5" value="3" data-bind="conf.${i}" style="width:140px"></div>`).join(''))
+ +card('🧩 كيف تعلّمت؟',STRAT.map((s,i)=>`<label class="opt"><input type="checkbox" data-bind="strat.${i}"> ${s}</label>`).join(''))
+ +card('💭 أسئلة للتأمل',`<b>ما أصعب جزء، وكيف تغلّبت عليه؟</b>${ta('reflect.a','',2)}<b>ما الخطأ الذي صحّحتُه في فهمي؟</b>${ta('reflect.b','',2)}<b>أين أرى المسافة والإزاحة والسرعة المتجهة في حياتي (الطيران، الملاحة البحرية، السباحة عكس التيار…)؟</b>${ta('reflect.c','',2)}<b>ماذا سأفعل بشكل مختلف في النشاط القادم؟</b>${ta('reflect.d','',2)}`)
+ +card('📄 تقرير التعلّم',`<div class="row"><button class="btn" id="mkrep">إنشاء التقرير</button></div><pre id="rep" style="white-space:pre-wrap;font-family:inherit;background:#f1f6fc;border-radius:10px;padding:10px;display:none"></pre><div class="row" id="repb" style="display:none"><button class="btn" id="cprep">📋 نسخ</button><button class="btn sec" id="mlrep">✉️ إرسال للمعلم</button><button class="btn ghost" onclick="window.print()">🖨️ طباعة</button></div>`)
+ +navBtns(6);
+ $('#kk',r).textContent=S.kwl.k||'—';$('#ww',r).textContent=S.kwl.w||'—';bind(r);initMedia(r);
+ $('#mkrep',r).onclick=()=>{const n=OBJ.filter(o=>o[1]).map((o,i)=>`- ${o[0]} (${S.conf[i]||3}/5)`).join('\n');const txt=`تقرير تعلّم – النشاط الرابع: رسم مسار الرحلة\n${resultText()}\n\nما تعلّمته: ${S.kwl.l||'—'}\n\nمستوى الثقة بالأهداف:\n${n}\n\nأصعب جزء: ${S.reflect.a||'—'}\nخطأ صحّحته: ${S.reflect.b||'—'}\nتطبيق حياتي: ${S.reflect.c||'—'}\nخطتي القادمة: ${S.reflect.d||'—'}`;const p=$('#rep');p.textContent=txt;p.style.display='block';$('#repb').style.display='flex';$('#cprep').onclick=()=>copyText(txt);$('#mlrep').onclick=()=>mailTo('تقرير تعلّم – '+student,txt)}}
+
+/* ================= التنقل ================= */
+const PH=[['📋','جدول التعلم والأهداف',rKWL],['🎣','التهيئة',rHook],['🔍','الاستكشاف',rExplore],['💡','الشرح والتفسير',rExplain],['🚀','الإثراء والتوسع',rEnrich],['📝','التقويم',rEval],['🧠','ما وراء التفكير',rMeta]];
+const navBtns=i=>`<div class="row nav"><button class="btn ghost" ${i===0?'disabled':''} onclick="go(${i-1})">→ السابق</button><button class="btn" onclick="nextPh(${i})">${i===6?'إنهاء ✔':'التالي ←'}</button></div>`;
+function renderSteps(){$('#steps').innerHTML=PH.map((p,i)=>`<button class="step ${S.phase===i?'on':''} ${S.done[i]?'done':''}" onclick="go(${i})">${p[0]} ${i+1}. ${p[1]}</button>`).join('');$('#pb').style.width=(Object.values(S.done).filter(Boolean).length/PH.length*100)+'%'}
+function go(i){SIMS.forEach(s=>s.destroy());SIMS=[];S.phase=i;save();renderSteps();const st=$('#stage');st.innerHTML='';PH[i][2](st);window.scrollTo({top:0,behavior:'smooth'})}
+function nextPh(i){S.done[i]=true;save();if(i<PH.length-1)go(i+1);else{renderSteps();alert('🎉 أحسنت! أنهيت جميع مراحل النشاط.')}}
+function updChip(){const rs=roster[student]||{};$('#chip').innerHTML=`${grp?'👥 '+grp.name+' ('+grp.members.length+' طلاب)':'👤 '+student} <span>| المستوى:</span><select id="lvsel">${[1,2,3].map(k=>`<option value="${k}" ${L()===k?'selected':''}>${LV[k]}</option>`).join('')}</select>${rs.group?`<span>| 👥 ${rs.group} (${rs.role})</span>`:''}<button class="btn ghost" style="padding:1px 10px;font-size:13px;background:#fff" onclick="openGroups()">👥 مجموعتي</button>`;$('#lvsel').onchange=e=>{S.level=+e.target.value;save();go(S.phase)}}
+
+/* ================= المعلم والمجموعات ================= */
+function openTeacher(){if(!teacherOK){const p=prompt('أدخل رمز المعلم:');if(p!==PIN){if(p!==null)alert('الرمز غير صحيح');return}teacherOK=true}renderTeacher()}
+function renderTeacher(){const m=$('#tmodal');m.classList.remove('hidden');
+ const groups={};NAMES.forEach(n=>{const g=roster[n].group;if(g){(groups[g]=groups[g]||[]).push(n)}});
+ m.innerHTML=`<div class="box wide"><h2>👩‍🏫 لوحة المعلم – قائمة الفصل والمجموعات المتمايزة</h2>
+ <p class="mut">الصف الأول الثانوي (القسم العربي). تُحفظ البيانات في متصفح هذا الجهاز؛ استخدم الجهاز نفسه أمام الطلاب أو انسخ الملخص للتوزيع.</p>
+ <div class="row"><label>📧 بريد استلام النتائج:</label><input type="text" id="tem" value="${getEmail()}" placeholder="name@school.edu.sa" style="max-width:300px"><button class="btn" id="svem">حفظ</button></div>
+ <table><tr><th>#</th><th>اسم الطالب</th><th>المستوى</th><th>نمط التعلم</th><th>المجموعة</th><th>الدور</th></tr>
+ ${NAMES.map((n,i)=>`<tr><td>${i+1}</td><td class="l">${n}</td><td><select data-lv="${i}"><option value="0">—</option>${[1,2,3].map(k=>`<option value="${k}" ${roster[n].level===k?'selected':''}>${LV[k]}</option>`).join('')}</select></td><td><select data-st="${i}"><option value="">—</option>${Object.keys(STY).map(k=>`<option value="${k}" ${roster[n].style===k?'selected':''}>${STY[k]}</option>`).join('')}</select></td><td>${roster[n].group||'—'}</td><td>${roster[n].role||'—'}</td></tr>`).join('')}</table>
+ <h3>🧮 توزيع المجموعات</h3><div class="row"><label>حجم المجموعة:</label><input type="number" id="gsz" class="in" value="4" min="2" max="8" style="width:70px">
+ <button class="btn" data-mk="homo">متجانسة حسب المستوى</button><button class="btn sec" data-mk="hetero">متمايزة (مختلطة المستويات)</button><button class="btn ghost" data-mk="style">حسب نمط التعلم</button><button class="btn ghost" data-mk="clear">مسح المجموعات</button></div>
+ <div class="grid2">${Object.keys(groups).map(g=>`<div class="gcard"><b>${g}</b><br>${groups[g].map(n=>`${n} <span class="badge" style="background:var(--teal)">${roster[n].role}</span> <small>${roster[n].level?LV[roster[n].level]:''}</small>`).join('<br>')}</div>`).join('')}</div>
+ <div class="row"><button class="btn" id="cpgr">📋 نسخ المجموعات</button><button class="btn ghost" id="tclose">إغلاق</button></div></div>`;
+ $('#svem',m).onclick=()=>{store.set('ps5_email',$('#tem').value.trim());alert('تم الحفظ')};
+ $$('[data-lv]',m).forEach(s=>s.onchange=()=>{roster[NAMES[+s.dataset.lv]].level=+s.value;store.set('ps5_roster',roster)});
+ $$('[data-st]',m).forEach(s=>s.onchange=()=>{roster[NAMES[+s.dataset.st]].style=s.value;store.set('ps5_roster',roster)});
+ $$('[data-mk]',m).forEach(b=>b.onclick=()=>{makeGroups(b.dataset.mk,+$('#gsz').value||4);renderTeacher()});
+ $('#cpgr',m).onclick=()=>copyText(Object.keys(groups).map(g=>g+':\n'+groups[g].map(n=>'  - '+n+' ('+roster[n].role+')').join('\n')).join('\n\n')||'لا توجد مجموعات');
+ $('#tclose',m).onclick=()=>{m.classList.add('hidden');if(S)updChip()}}
+function makeGroups(mode,size){const lv=n=>roster[n].level||2;let names=NAMES.slice(),gr=[];
+ NAMES.forEach(n=>{roster[n].group='';roster[n].role=''});
+ const chunk=()=>{for(let i=0;i<names.length;i+=size)gr.push(names.slice(i,i+size));if(gr.length>1&&gr[gr.length-1].length<3){const l=gr.pop();gr[gr.length-1]=gr[gr.length-1].concat(l)}};
+ if(mode==='homo'){names.sort((a,b)=>lv(a)-lv(b));chunk()}
+ else if(mode==='hetero'){const n=Math.ceil(names.length/size);names.sort((a,b)=>lv(b)-lv(a));gr=Array.from({length:n},()=>[]);names.forEach((nm,i)=>{const r=Math.floor(i/n),k=i%n;gr[r%2===0?k:n-1-k].push(nm)})}
+ else if(mode==='style'){const o=['visual','exp','verbal','math',''];names.sort((a,b)=>o.indexOf(roster[a].style)-o.indexOf(roster[b].style)||lv(a)-lv(b));chunk()}
+ else{store.set('ps5_roster',roster);return}
+ gr.forEach((g,gi)=>g.forEach((nm,ri)=>{roster[nm].group='المجموعة '+(gi+1);roster[nm].role=ROLES[ri%ROLES.length]}));store.set('ps5_roster',roster)}
+
+/* ================= تكوين الطلاب لمجموعاتهم ================= */
+const groupsMap=()=>{const g={};Object.keys(roster).forEach(n=>{const x=roster[n].group;if(x)(g[x]=g[x]||[]).push(n)});return g};
+let grp=null;
+function enterGroup(k){const mem=groupsMap()[k]||[];if(S&&student)save();grp={name:k,members:mem};student='👥 '+k;S=Object.assign(defS(),store.get('ps5_s_'+student,{}));const lvs=mem.map(n=>roster[n].level).filter(Boolean);if(lvs.length)S.level=Math.min(...lvs);$('#login').classList.add('hidden');$('#gmodal').classList.add('hidden');updChip();renderSteps();go(S.phase||0)}
+function openGroupLogin(){const m=$('#gmodal'),gm=groupsMap(),ks=Object.keys(gm);m.classList.remove('hidden');m.style.zIndex=150;m.innerHTML=`<div class="box wide"><h2>👥 الدخول كمجموعة</h2><p class="mut">اختاروا مجموعتكم للعمل بتقدّم مشترك، أو كوّنوا مجموعة جديدة.</p>${ks.length?`<div class="grid2">${ks.map(k=>`<div class="gcard"><b>${k}</b><br>${gm[k].map(n=>n+' <span class="badge" style="background:var(--teal)">'+roster[n].role+'</span>').join('<br>')}<div class="row"><button class="btn" data-enter="${k}">دخول كمجموعة ←</button></div></div>`).join('')}</div>`:'<p>لا توجد مجموعات بعد.</p>'}<h3>➕ تكوين مجموعة جديدة</h3><input type="text" id="gname" placeholder="اسم المجموعة"><p>اختر الأعضاء (2 إلى 6):</p><div class="grid2">${NAMES.map((n,i)=>`<label class="opt"><input type="checkbox" data-gm="${i}"> ${n}${roster[n].group?` <small class="mut">(في ${roster[n].group})</small>`:''}</label>`).join('')}</div><div class="row"><button class="btn ok" id="gmk2">إنشاء المجموعة والدخول</button><button class="btn ghost" id="gcl2">إغلاق</button></div></div>`;$$('[data-enter]',m).forEach(b=>b.onclick=()=>enterGroup(b.dataset.enter));$('#gcl2',m).onclick=()=>m.classList.add('hidden');$('#gmk2',m).onclick=()=>{const nm=$('#gname',m).value.trim(),pick=$$('[data-gm]',m).filter(c=>c.checked).map(c=>NAMES[+c.dataset.gm]);if(!nm){alert('اكتب اسم المجموعة');return}if(pick.length<2||pick.length>6){alert('اختر من 2 إلى 6 أعضاء');return}pick.forEach(n=>{roster[n].group=nm});NAMES.filter(n=>roster[n].group===nm).forEach((n,i)=>{roster[n].role=ROLES[i%ROLES.length]});store.set('ps5_roster',roster);enterGroup(nm)}}
+function closeG(){$('#gmodal').classList.add('hidden');if(S&&S.phase===2)go(2)}
+function openGroups(){
+ if(grp){openGroupLogin();return}if(!student)return;roster[student]=roster[student]||{level:0,style:'',group:'',role:''};
+ const m=$('#gmodal');m.classList.remove('hidden');
+ const gm=groupsMap(),me=roster[student],MAXG=6,free=NAMES.filter(n=>n!==student&&!roster[n].group);
+ const ro=(sel)=>ROLES.map(r=>`<option ${r===sel?'selected':''}>${r}</option>`).join('');
+ const joinable=Object.keys(gm).filter(k=>gm[k].length<MAXG);
+ m.innerHTML=`<div class="box wide"><h2>👥 مجموعتي – تكوين المجموعات</h2>
+ <p class="mut">كوّنوا مجموعتكم معاً: اختاروا الأعضاء والأدوار. تُحفظ المجموعات على هذا الجهاز ويراها المعلم في لوحته؛ وإن كنتم على أجهزة مختلفة فانسخوا بيانات المجموعة وأرسلوها للمعلم.</p>
+ ${me.group?`<div class="gcard"><b>${me.group}</b> — دورك: <b>${me.role}</b><br>${(gm[me.group]||[]).map(n=>`${n} <span class="badge" style="background:var(--teal)">${roster[n].role}</span>`).join('<br>')}<div class="row"><button class="btn" id="gcopy">📋 نسخ بيانات المجموعة</button><button class="btn ghost" id="gleave">مغادرة المجموعة</button></div></div>`
+ :`<h3>➕ إنشاء مجموعة جديدة (حتى ${MAXG} أعضاء)</h3>
+ <input type="text" id="gname" placeholder="اسم المجموعة (مثال: صقور الجو)">
+ <table><tr><th>العضو</th><th>الدور</th></tr><tr><td class="l">✅ أنا: ${student}</td><td><select id="rme" class="in">${ro(ROLES[0])}</select></td></tr>
+ ${free.map((n,i)=>`<tr><td class="l"><label><input type="checkbox" data-gm="${i}"> ${n}</label></td><td><select class="in" data-gr="${i}">${ro(ROLES[(i+1)%ROLES.length])}</select></td></tr>`).join('')}</table>
+ <div class="row"><button class="btn ok" id="gmk">إنشاء المجموعة</button></div>
+ ${joinable.length?`<h3>🔗 أو انضم إلى مجموعة قائمة</h3>${joinable.map(k=>`<div class="gcard" style="margin:6px 0"><b>${k}</b> (${gm[k].length} أعضاء): ${gm[k].join('، ')}<div class="row"><select class="in" data-jr="${k}">${ro(ROLES.find(r=>!gm[k].some(n=>roster[n].role===r))||ROLES[0])}</select><button class="btn" data-join="${k}">انضمام</button></div></div>`).join('')}`:''}`}
+ <div class="row"><button class="btn ghost" id="gclose">إغلاق</button></div></div>`;
+ const sv=()=>{store.set('ps5_roster',roster);updChip()};
+ $('#gclose',m).onclick=closeG;
+ const lv=$('#gleave',m);if(lv)lv.onclick=()=>{me.group='';me.role='';sv();openGroups()};
+ const cp=$('#gcopy',m);if(cp)cp.onclick=()=>copyText(me.group+':\n'+(gm[me.group]||[]).map(n=>'- '+n+' ('+roster[n].role+')').join('\n'));
+ const mk=$('#gmk',m);if(mk)mk.onclick=()=>{const picks=$$('[data-gm]',m).filter(c=>c.checked).map(c=>+c.dataset.gm);
+  if(!picks.length){alert('اختر زميلاً واحداً على الأقل');return}if(picks.length+1>MAXG){alert('الحد الأقصى '+MAXG+' أعضاء');return}
+  let name=$('#gname').value.trim()||'مجموعة '+(Object.keys(gm).length+1);while(gm[name])name+='*';
+  me.group=name;me.role=$('#rme').value;picks.forEach(i=>{const n=free[i];roster[n].group=name;roster[n].role=$(`[data-gr="${i}"]`,m).value});sv();openGroups()};
+ $$('[data-join]',m).forEach(b=>b.onclick=()=>{me.group=b.dataset.join;me.role=$(`[data-jr="${b.dataset.join}"]`,m).value;sv();openGroups()});
+ m.onclick=e=>{if(e.target===m)closeG()}}
+
+/* ================= البداية ================= */
+(function init(){
+ const sel=$('#lsel');sel.innerHTML='<option value="">— اختر اسمك —</option>'+NAMES.map(n=>`<option>${n}</option>`).join('');
+ $('#lgo').onclick=()=>{const nm=$('#lname').value.trim()||sel.value;if(!nm){alert('اختر اسمك أو اكتبه');return}
+  grp=null;student=nm;S=Object.assign(defS(),store.get('ps5_s_'+nm,{}));const rl=roster[nm]&&roster[nm].level;if(rl)S.level=rl;
+  $('#login').classList.add('hidden');updChip();renderSteps();go(S.phase||0)};
+ $('#lgroup').onclick=openGroupLogin;
+ $('#lteacher').onclick=()=>{$('#login').classList.add('hidden');if(!S){S=defS()}openTeacher();$('#tmodal').addEventListener('click',e=>{if(e.target.id==='tmodal'){$('#tmodal').classList.add('hidden');if(!student)$('#login').classList.remove('hidden')}})}
+})();
+</script>
+</body>
+</html>
